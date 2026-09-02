@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JetX - Official Edition</title>
+  <title>JetX - SmartSoft Official Edition</title>
   <style>
     :root {
       --bg-dark: #0a0b10;
@@ -18,35 +18,25 @@
       --text-white: #ffffff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: #000; color: #fff; display: flex; justify-content: center; min-height: 100vh; }
+    html, body { width: 100%; height: 100%; background: #000; color: #fff; overflow-x: hidden; }
     
     .jetx-wrapper {
-      width: 100%; max-width: 440px; min-height: 100vh; background: var(--bg-dark);
-      display: flex; flex-direction: column; position: relative; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color);
+      width: 100%; height: 100vh; max-height: 100vh; background: var(--bg-dark);
+      display: flex; flex-direction: column; position: relative; margin: 0 auto; overflow: hidden;
     }
 
-    /* 1. Top Navigation Bar */
-    .top-nav {
-      display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #08090d; border-bottom: 1px solid #161822;
-    }
-    .top-left { display: flex; align-items: center; gap: 8px; }
-    .back-btn { font-size: 16px; cursor: pointer; color: #fff; background: none; border: none; display: flex; align-items: center; }
-    .user-avatar-badge { width: 24px; height: 24px; border-radius: 50%; background: #1c1f2b; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 1px solid #2d3245; }
-    
-    .top-right { display: flex; align-items: center; gap: 6px; }
-    .curr-box { background: #000; border: 1px solid #232736; border-radius: 4px; padding: 3px 8px; display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: bold; cursor: pointer; }
-    .curr-icon { width: 14px; height: 14px; border-radius: 50%; background: #007799; font-size: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-    .dep-btn { background: #ffb300; color: #000; font-weight: 800; font-size: 11px; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
-
-    /* 2. SmartSoft Brand Bar */
+    /* 1. SmartSoft Brand Bar (Direct Header) */
     .brand-top-bar {
-      display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #08090d; font-size: 10px; color: var(--text-gray); font-weight: bold;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 12px 2px; background: #08090d; font-size: 10px; color: var(--text-gray); font-weight: bold; flex-shrink: 0;
     }
     .smartsoft-logo { display: flex; align-items: center; gap: 4px; color: #ff3344; font-weight: 900; }
     .smartsoft-logo span { color: #fff; }
 
+    /* 2. JetX Subheader */
     .jetx-header-bar {
-      display: flex; justify-content: space-between; align-items: center; padding: 4px 12px 6px; background: #08090d;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 2px 12px 6px; background: #08090d; border-bottom: 1px solid #161822; flex-shrink: 0;
     }
     .jetx-logo { font-size: 22px; font-weight: 900; font-style: italic; color: #fff; letter-spacing: -0.5px; }
     .jetx-logo span { color: var(--jet-yellow); }
@@ -55,7 +45,7 @@
 
     /* 3. Multipliers History Ticker */
     .history-ticker {
-      display: flex; align-items: center; gap: 4px; padding: 4px 10px; background: #0c0e15; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #1a1d2a;
+      display: flex; align-items: center; gap: 4px; padding: 4px 10px; background: #0c0e15; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #1a1d2a; flex-shrink: 0;
     }
     .history-ticker::-webkit-scrollbar { display: none; }
     .mult-chip {
@@ -67,22 +57,22 @@
 
     /* 4. Canvas Flight Screen */
     .flight-arena {
-      width: 100%; height: 210px; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1c202d;
+      width: 100%; height: 210px; min-height: 200px; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1c202d; flex-shrink: 0;
     }
     #flightCanvas { width: 100%; height: 100%; display: block; }
     
     .multiplier-overlay {
-      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; z-index: 5;
     }
     .mult-text { font-size: 50px; font-weight: 900; color: #00e676; text-shadow: 0 0 20px rgba(0,230,118,0.4); }
     .mult-text.crashed { color: var(--jet-red) !important; text-shadow: 0 0 20px rgba(255,51,68,0.5); }
     
-    .online-counter { position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; color: var(--jet-yellow); display: flex; align-items: center; gap: 4px; }
+    .online-counter { position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; color: var(--jet-yellow); display: flex; align-items: center; gap: 4px; z-index: 5; }
 
     /* Runway Receiving State */
     .receiving-bets-banner {
       position: absolute; inset: 0; background: radial-gradient(circle at center, #1b1e2e 0%, #0c0d14 100%);
-      display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 5;
+      display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 6;
     }
     .runway-jet { font-size: 38px; animation: bounceJet 1s infinite alternate; }
     .receiving-progress { width: 140px; height: 3px; background: #232736; border-radius: 2px; margin-top: 10px; overflow: hidden; }
@@ -91,7 +81,7 @@
 
     /* 5. Controls Top Toggles Bar */
     .controls-top-toggle {
-      display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #10121a; border-bottom: 1px solid #1c202d; font-size: 11px; font-weight: bold; color: var(--text-gray);
+      display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; background: #10121a; border-bottom: 1px solid #1c202d; font-size: 11px; font-weight: bold; color: var(--text-gray); flex-shrink: 0;
     }
     .btn-x2 { background: #1c202e; border: 1px solid #2d3348; color: var(--jet-yellow); font-weight: 900; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
     .toggle-group { display: flex; align-items: center; gap: 6px; }
@@ -102,11 +92,11 @@
     input:checked + .slider-sm { background-color: var(--jet-yellow); }
     input:checked + .slider-sm:before { transform: translateX(12px); background-color: #000; }
 
-    /* 6. Dual Bet Panels Container */
-    .bet-panels-wrapper { padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; background: #0c0e15; }
+    /* 6. Dual Yellow Bet Panels */
+    .bet-panels-wrapper { padding: 5px 8px; display: flex; flex-direction: column; gap: 5px; background: #0c0e15; flex-shrink: 0; }
     
     .jet-panel {
-      background: #141722; border: 1px solid #232736; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px;
+      background: #141722; border: 1px solid #232736; border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px;
     }
     .panel-grid-content { display: flex; gap: 8px; }
     
@@ -130,7 +120,7 @@
     /* Main Solid Yellow Bet Button */
     .jet-main-bet-btn {
       flex: 1; background: var(--jet-yellow); color: #000; border: none; border-radius: 6px; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; transition: 0.15s; font-weight: 900;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; transition: 0.15s; font-weight: 900;
     }
     .jet-main-bet-btn:hover { background: var(--jet-yellow-hover); }
     .jet-main-bet-btn.state-collect {
@@ -147,107 +137,87 @@
     .btn-action-label { font-size: 17px; font-weight: 900; text-transform: uppercase; margin-top: -2px; }
 
     /* 7. Bottom 5 Tabs & Tables Section */
-    .live-players-section { flex: 1; display: flex; flex-direction: column; background: #090a10; }
+    .live-players-section { flex: 1; min-height: 0; display: flex; flex-direction: column; background: #090a10; }
     .bottom-tabs-bar {
-      display: flex; background: #08090d; border-top: 1px solid #1c202d; border-bottom: 1px solid #1c202d; padding: 6px 4px;
+      display: flex; background: #08090d; border-top: 1px solid #1c202d; border-bottom: 1px solid #1c202d; padding: 4px 4px; flex-shrink: 0;
     }
     .b-tab-item {
       flex: 1; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-gray); cursor: pointer; padding-bottom: 4px; border-bottom: 2px solid transparent;
     }
     .b-tab-item.active { color: var(--jet-yellow); border-bottom-color: var(--jet-yellow); }
 
-    .tab-view-container { flex: 1; max-height: 230px; overflow-y: auto; padding: 4px 8px; }
+    .tab-view-container { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 8px; }
     .tab-subview { display: none; }
     .tab-subview.active { display: block; }
 
     .table-header-row {
-      display: flex; justify-content: space-between; padding: 6px 8px; font-size: 11px; font-weight: bold; color: var(--text-gray); border-bottom: 1px solid #161822; background: #0c0e15;
+      display: flex; justify-content: space-between; padding: 4px 8px; font-size: 10px; font-weight: bold; color: var(--text-gray); border-bottom: 1px solid #161822; background: #0c0e15;
     }
     .player-row-item {
-      display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; font-size: 11px; font-weight: bold; border-bottom: 1px solid #12141c; color: #cbd5e1;
+      display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 11px; font-weight: bold; border-bottom: 1px solid #12141c; color: #cbd5e1; transition: background 0.25s;
     }
-    .player-row-item.cashed-out { color: var(--jet-green); background: rgba(0, 230, 118, 0.06); }
+    .player-row-item.cashed-out { color: var(--jet-green); background: rgba(0, 230, 118, 0.08); }
     .col-user { width: 90px; }
     .col-bet { width: 70px; text-align: right; }
     .col-collect { width: 60px; text-align: center; }
     .col-win { width: 80px; text-align: right; }
 
-    /* Toast Container */
-    #toastContainer {
-      position: fixed; top: 15px; left: 50%; transform: translateX(-50%); z-index: 9999;
-      display: flex; flex-direction: column; gap: 6px; width: 90%; max-width: 360px; pointer-events: none;
+    /* Clean Floating Collect Banner */
+    .clean-win-banner {
+      position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #ffcc00, #ffb300); color: #000; font-size: 13px; font-weight: 900;
+      padding: 8px 20px; border-radius: 30px; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.6);
+      z-index: 9999; display: none; animation: popWin 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .app-toast {
-      background: #111b24; border: 1px solid var(--jet-yellow); color: #fff; padding: 10px 14px;
-      border-radius: 8px; font-size: 12px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      display: flex; align-items: center; gap: 8px; animation: toastSlide 0.25s ease-out; pointer-events: auto;
-    }
-    .app-toast.error { border-color: #ff3344; }
 
     @keyframes bounceJet { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
     @keyframes pulseCollect {
       0% { transform: scale(0.99); box-shadow: 0 0 6px rgba(0,230,118,0.4); }
       100% { transform: scale(1.02); box-shadow: 0 0 16px rgba(0,230,118,0.8); }
     }
-    @keyframes toastSlide { 0% { transform: translateY(-10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes popWin { 0% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } }
   </style>
 </head>
 <body>
 
 <div class="jetx-wrapper">
-  <!-- Toast Container -->
-  <div id="toastContainer"></div>
-
-  <!-- 1. Top Navigation -->
-  <div class="top-nav">
-    <div class="top-left">
-      <button class="back-btn" onclick="history.back()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </button>
-      <div class="user-avatar-badge">H</div>
-    </div>
-    <div class="top-right">
-      <div class="curr-box" onclick="toggleBalVisibility()">
-        <div class="curr-icon">Br</div>
-        <span id="balHideText">••••••</span>
-        <span style="font-size:10px; color:var(--text-gray);">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </span>
-      </div>
-      <button class="dep-btn" onclick="showToast('Open Wallet in Main Hub')">Deposit</button>
-    </div>
+  <!-- Clean Floating Collect Banner -->
+  <div class="clean-win-banner" id="cleanWinBanner">
+    🎉 <span id="winBannerText">+100.00 ETB Collected!</span>
   </div>
 
-  <!-- 2. SmartSoft Brand Bar -->
+  <!-- 1. SmartSoft Brand Bar -->
   <div class="brand-top-bar">
     <div class="smartsoft-logo">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff3344"><polygon points="12 2 22 12 12 22 2 12"/></svg>
       <span>SMARTSOFT</span> GAMING
     </div>
-    <div id="liveClockDisplay">22:25:29</div>
+    <div id="liveClockDisplay">18:00:27</div>
   </div>
 
-  <!-- 3. JetX Subheader -->
+  <!-- 2. JetX Subheader -->
   <div class="jetx-header-bar">
     <div class="jetx-logo">Jet<span>X</span></div>
     <div style="display:flex; align-items:center; gap:12px;">
       <div class="jetx-bal-box">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffcc00"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h6" stroke="#000" stroke-width="2"/></svg>
-        <span id="userBalText">1000.54</span> ETB
+        <span id="userBalText">0.00</span> ETB
       </div>
       <div class="header-icons-right">
+        <!-- Master Sound Toggle (Default: Silent 🔇) -->
         <span id="soundIcon" onclick="toggleGlobalAudio()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
         </span>
-        <span onclick="showToast('Live support chat connected')">
+        <span onclick="switchBottomTab('chat', document.querySelectorAll('.b-tab-item')[3])">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </span>
       </div>
     </div>
   </div>
 
-  <!-- 4. Multipliers History Ticker -->
+  <!-- 3. Multipliers History Ticker -->
   <div class="history-ticker" id="historyTicker">
+    <span class="mult-chip chip-green">2.40x</span>
     <span class="mult-chip chip-yellow">1.17x</span>
     <span class="mult-chip chip-green">4.34x</span>
     <span class="mult-chip chip-red">1.24x</span>
@@ -258,7 +228,7 @@
     <span class="mult-chip chip-green">9.48x</span>
   </div>
 
-  <!-- 5. Canvas Flight Arena -->
+  <!-- 4. Canvas Flight Arena -->
   <div class="flight-arena">
     <canvas id="flightCanvas"></canvas>
     
@@ -281,7 +251,7 @@
     </div>
   </div>
 
-  <!-- 6. Controls Top Toggles Bar -->
+  <!-- 5. Controls Top Toggles Bar -->
   <div class="controls-top-toggle">
     <button class="btn-x2" onclick="multiplyBothBets(2)">X2</button>
     <div class="toggle-group">
@@ -294,7 +264,7 @@
     </div>
   </div>
 
-  <!-- 7. Dual Yellow Bet Panels -->
+  <!-- 6. Dual Yellow Bet Panels -->
   <div class="bet-panels-wrapper">
     <!-- PANEL 1 -->
     <div class="jet-panel" id="panel1">
@@ -361,7 +331,7 @@
     </div>
   </div>
 
-  <!-- 8. Bottom 5 Tabs & Tables Section -->
+  <!-- 7. Bottom 5 Tabs & Tables Section -->
   <div class="live-players-section">
     <div class="bottom-tabs-bar">
       <div class="b-tab-item active" onclick="switchBottomTab('players', this)">Players</div>
@@ -398,17 +368,17 @@
       <!-- 4. Chat Tab -->
       <div class="tab-subview" id="tabViewChat">
         <div style="display:flex; flex-direction:column; gap:6px; font-size:11px;" id="chatMessagesList">
-          <div style="color:var(--text-gray);"><b style="color:var(--jet-yellow);">Alex99:</b> High flight coming up! 🚀</div>
-          <div style="color:var(--text-gray);"><b style="color:#38bdf8;">KenoKing:</b> Cashed out 4.3x nice 🔥</div>
+          <div style="color:var(--text-gray);"><b style="color:var(--jet-yellow);">a8de:</b> Let's get a 10x! 🚀</div>
+          <div style="color:var(--text-gray);"><b style="color:#38bdf8;">d1e1:</b> Collected at 2.0x clean 🔥</div>
         </div>
       </div>
 
       <!-- 5. Statistics Tab -->
       <div class="tab-subview" id="tabViewStats">
         <div style="padding:8px; font-size:11px; color:#cbd5e1; line-height:1.6;">
-          <div>🏆 <b>Highest Multiplier Today:</b> <span style="color:var(--jet-green);">45.80x</span></div>
-          <div>⏱ <b>Average Flight Duration:</b> 8.4 seconds</div>
-          <div>👥 <b>Total Active Bets Today:</b> 1,420</div>
+          <div>🏆 <b>Highest Flight Today:</b> <span style="color:var(--jet-green);">45.80x</span></div>
+          <div>⏱ <b>Average Flight Time:</b> 8.4s</div>
+          <div>👥 <b>Active Bets Today:</b> 1,420</div>
         </div>
       </div>
     </div>
@@ -416,18 +386,18 @@
 </div>
 
 <script>
-  // Toast Helper
-  function showToast(msg, isError = false) {
-    const container = document.getElementById("toastContainer");
-    const toast = document.createElement("div");
-    toast.className = `app-toast ${isError ? 'error' : ''}`;
-    toast.innerHTML = `<span>${isError ? '⚠️' : '✅'}</span> <span>${msg}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
+  // Master API URL
+  const API_URL = "https://script.google.com/macros/s/AKfycbzCI7hG2Xaz7gEEfHmakGmk4Z2kiQ1hcIho6snlemPGMcIz10pMcEBPE5aP9sNNfYLf/exec";
+
+  function triggerCleanWin(msg) {
+    const banner = document.getElementById("cleanWinBanner");
+    document.getElementById("winBannerText").innerText = msg;
+    banner.style.display = "block";
+    setTimeout(() => { banner.style.display = "none"; }, 3500);
   }
 
-  // Audio Control
-  let isMuted = localStorage.getItem("audio_muted") === "true";
+  // Master Audio Control (DEFAULT: SILENT 🔇)
+  let isMuted = true;
   let audioCtx = null;
 
   function initAudio() {
@@ -460,7 +430,6 @@
 
   function toggleGlobalAudio() {
     isMuted = !isMuted;
-    localStorage.setItem("audio_muted", isMuted);
     renderAudioIcon();
   }
 
@@ -469,10 +438,9 @@
     if (isMuted) {
       el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>`;
     } else {
-      el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+      el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
     }
   }
-  renderAudioIcon();
 
   // Digital Clock
   setInterval(() => {
@@ -481,8 +449,7 @@
   }, 1000);
 
   // State Management
-  let balance = parseFloat(localStorage.getItem("global_balance") || "1000.54");
-  let isBalHidden = false;
+  let balance = parseFloat(localStorage.getItem("global_balance") || "0.00");
   let gameState = "RECEIVING"; // RECEIVING | FLYING | CRASHED
   let currentMultiplier = 1.00;
   let targetCrashMultiplier = 1.00;
@@ -495,10 +462,10 @@
   };
 
   let mySessionBetsLog = [];
+  let liveSimulatedPlayers = [];
 
   function updateBalanceDisplay() {
     document.getElementById("userBalText").innerText = balance.toFixed(2);
-    document.getElementById("balHideText").innerText = isBalHidden ? "••••••" : `${balance.toFixed(2)} ETB`;
     localStorage.setItem("global_balance", balance.toFixed(2));
     try {
       if (window.parent && window.parent !== window) {
@@ -508,12 +475,18 @@
   }
   updateBalanceDisplay();
 
-  function toggleBalVisibility() {
-    isBalHidden = !isBalHidden;
-    updateBalanceDisplay();
+  async function fetchServerUserBalance() {
+    try {
+      const res = await fetch(`${API_URL}?action=initUser&userId=589218392`).then(r => r.json());
+      if (res && res.balance !== undefined) {
+        balance = parseFloat(res.balance);
+        updateBalanceDisplay();
+      }
+    } catch(e) {}
   }
+  fetchServerUserBalance();
 
-  // 85% Smart Balanced Crash Generator
+  // Smart Balanced Crash Generator (85% Model)
   function generateServerCrashMultiplier() {
     const roll = Math.random() * 100;
     if (roll <= 8.0) return Number((1.00 + Math.random() * 0.12).toFixed(2));
@@ -522,7 +495,9 @@
     else return Number((10.00 + Math.random() * 70.00).toFixed(2));
   }
 
-  // Canvas Engine
+  // -------------------------------------------------------------
+  // 🚀 REALISTIC JETX FLIGHT CANVAS ENGINE & SMOOTH SPEED
+  // -------------------------------------------------------------
   const canvas = document.getElementById("flightCanvas");
   const ctx = canvas.getContext("2d");
 
@@ -640,8 +615,11 @@
     });
   }
 
-  // Flight Loop Controller
+  // -------------------------------------------------------------
+  // 🕹️ GAMEPLAY LOOP & FLIGHT CONTROLLER
+  // -------------------------------------------------------------
   function startReceivingBetsPhase() {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
     gameState = "RECEIVING";
     document.getElementById("receivingBanner").style.display = "flex";
     const multText = document.getElementById("liveMultiplierText");
@@ -652,7 +630,6 @@
     let fillWidth = 0;
     const fillEl = document.getElementById("receivingProgressFill");
 
-    // Auto-Bet Handler
     if (document.getElementById("autoBetToggle").checked) {
       [1, 2].forEach(id => {
         if (bets[id].state === 'IDLE') queueAutoBet(id);
@@ -661,7 +638,7 @@
 
     const timer = setInterval(() => {
       fillWidth += 2;
-      fillEl.style.width = fillWidth + "%";
+      fillEl.style.width = Math.min(100, fillWidth) + "%";
 
       if (fillWidth >= 100) {
         clearInterval(timer);
@@ -689,13 +666,17 @@
       }
     });
 
-    renderDemoPlayersTable();
+    initLiveSimulatedPlayers();
     runFlightLoop();
   }
 
+  // Realistic JetX Multiplier Timing (~5.5-6s to 2.0x)
   function runFlightLoop() {
-    const elapsed = (performance.now() - flightStartTime) / 1000;
-    currentMultiplier = Number((1.00 + Math.pow(elapsed * 0.45, 1.85)).toFixed(2));
+    if (gameState !== "FLYING") return;
+
+    const now = performance.now();
+    const elapsed = Math.max(0, (now - flightStartTime) / 1000);
+    currentMultiplier = Number((1.00 + (0.07 * elapsed) + (0.038 * Math.pow(elapsed, 1.45))).toFixed(2));
     
     document.getElementById("liveMultiplierText").innerText = currentMultiplier.toFixed(2) + " x";
 
@@ -714,9 +695,8 @@
       }
     });
 
-    if (Math.random() < 0.04) {
-      parachutes.push({ x: 40 + Math.random() * (canvas.width - 100), y: 30 + Math.random() * 50 });
-    }
+    // Update Live Demo Players Collect
+    updateDemoPlayersCollect(currentMultiplier);
 
     drawFlightArena(currentMultiplier);
 
@@ -728,7 +708,7 @@
   }
 
   function triggerJetCrash() {
-    cancelAnimationFrame(animationFrameId);
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
     gameState = "CRASHED";
     SOUNDS.crash();
 
@@ -758,21 +738,24 @@
     const amt = Number(document.getElementById(`betInput${id}`).value);
 
     if (b.state === 'IDLE') {
-      if (amt > balance) return showToast("Insufficient balance!", true);
+      if (amt > balance) {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "OPEN_DEPOSIT" }, "*");
+        }
+        return;
+      }
       balance -= amt;
       updateBalanceDisplay();
       b.amount = amt;
       b.state = 'QUEUED';
       updatePanelButtonUI(id);
       SOUNDS.click();
-      showToast(`Bet placed for ${gameState === 'RECEIVING' ? 'current' : 'next'} flight!`);
     } else if (b.state === 'QUEUED') {
       balance += b.amount;
       updateBalanceDisplay();
       b.state = 'IDLE';
       updatePanelButtonUI(id);
       SOUNDS.click();
-      showToast("Bet canceled and refunded");
     } else if (b.state === 'IN_FLIGHT') {
       executeCollect(id);
     }
@@ -800,7 +783,7 @@
     updatePanelButtonUI(id);
     mySessionBetsLog.unshift({ bet: b.amount, mult: currentMultiplier, win: winAmt, status: 'WON' });
     renderMyBetsTable();
-    showToast(`🎉 Collected @ ${currentMultiplier.toFixed(2)}x! +${winAmt.toFixed(2)} ETB`);
+    triggerCleanWin(`🎉 +${winAmt.toFixed(2)} ETB Collected @ ${currentMultiplier.toFixed(2)}x!`);
   }
 
   function updatePanelButtonUI(id) {
@@ -812,7 +795,7 @@
     btn.className = "jet-main-bet-btn";
 
     if (b.state === 'IDLE') {
-      amtLabel.innerText = `${document.getElementById(`betInput${id}`).value} ETB`;
+      amtLabel.innerText = `${Number(document.getElementById(`betInput${id}`).value).toFixed(2)} ETB`;
       actionLabel.innerText = "BET";
     } else if (b.state === 'QUEUED') {
       if (gameState === "FLYING") {
@@ -860,7 +843,6 @@
 
   function toggleAutoBetSetting() {
     SOUNDS.click();
-    showToast(`Auto Bet ${document.getElementById("autoBetToggle").checked ? 'Enabled' : 'Disabled'}`);
   }
 
   function addMultiplierToTicker(mult) {
@@ -870,7 +852,6 @@
     chip.innerText = mult.toFixed(2) + "x";
     ticker.prepend(chip);
 
-    // Append to History tab list
     const histTable = document.getElementById("historyTableBody");
     histTable.insertAdjacentHTML('afterbegin', `
       <div class="player-row-item">
@@ -880,23 +861,49 @@
     `);
   }
 
-  function renderDemoPlayersTable() {
-    const tbody = document.getElementById("playersTableBody");
+  // -------------------------------------------------------------
+  // 👥 DYNAMIC LIVE DEMO PLAYERS & 5 FUNCTIONAL TABS
+  // -------------------------------------------------------------
+  function initLiveSimulatedPlayers() {
     const demo = [
-      { user: "a8de2f1b", bet: 50.00, collect: 2.00, win: 100.00 },
-      { user: "d1e1e282", bet: 20.00, collect: 0, win: 0 },
-      { user: "94e98ed5", bet: 13.53, collect: 1.66, win: 22.45 },
-      { user: "854afa1e", bet: 10.00, collect: 1.84, win: 18.40 }
+      { user: "a8de2f1b", bet: 50.00, target: 2.00, cashed: false },
+      { user: "d1e1e282", bet: 20.00, target: 3.50, cashed: false },
+      { user: "94e98ed5", bet: 13.53, target: 1.66, cashed: false },
+      { user: "854afa1e", bet: 10.00, target: 1.84, cashed: false }
     ];
+    liveSimulatedPlayers = demo;
+    renderLivePlayersTable();
+  }
 
-    tbody.innerHTML = demo.map(p => `
-      <div class="player-row-item ${p.win > 0 ? 'cashed-out' : ''}">
+  function renderLivePlayersTable() {
+    const tbody = document.getElementById("playersTableBody");
+    tbody.innerHTML = liveSimulatedPlayers.map((p, idx) => `
+      <div class="player-row-item ${p.cashed ? 'cashed-out' : ''}" id="p-row-${idx}">
         <div class="col-user">${p.user}</div>
         <div class="col-bet">${p.bet.toFixed(2)} ETB</div>
-        <div class="col-collect">${p.collect > 0 ? p.collect.toFixed(2) + 'x' : '--'}</div>
-        <div class="col-win">${p.win > 0 ? p.win.toFixed(2) + ' ETB' : '--'}</div>
+        <div class="col-collect" id="p-col-${idx}">${p.cashed ? p.target.toFixed(2) + 'x' : '--'}</div>
+        <div class="col-win" id="p-win-${idx}">${p.cashed ? (p.bet * p.target).toFixed(2) + ' ETB' : '--'}</div>
       </div>
     `).join('');
+  }
+
+  function updateDemoPlayersCollect(mult) {
+    liveSimulatedPlayers.forEach((p, idx) => {
+      if (!p.cashed && mult >= p.target && mult < targetCrashMultiplier) {
+        p.cashed = true;
+        const row = document.getElementById(`p-row-${idx}`);
+        if (row) row.classList.add("cashed-out");
+        const colC = document.getElementById(`p-col-${idx}`);
+        if (colC) colC.innerText = p.target.toFixed(2) + "x";
+        const colW = document.getElementById(`p-win-${idx}`);
+        if (colW) colW.innerText = (p.bet * p.target).toFixed(2) + " ETB";
+
+        // Drop parachute
+        if (parachutes.length < 4) {
+          parachutes.push({ x: 30 + Math.random() * (canvas.width - 80), y: 30 + Math.random() * 40 });
+        }
+      }
+    });
   }
 
   function renderMyBetsTable() {
@@ -929,7 +936,7 @@
     document.getElementById(viewMap[tabKey]).classList.add("active");
   }
 
-  // Launch Engine
+  // Start Engine
   startReceivingBetsPhase();
 </script>
 </body>
