@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JetX - SmartSoft Official Production Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>JetX - SmartSoft Official Edition</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -16,167 +16,117 @@
       --jet-yellow-hover: #ffd633;
       --jet-green: #00e676;
       --jet-red: #ff3344;
-      --text-gray: #7d8494;
-      --text-white: #ffffff;
+      --text-gray: #7d849b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    html, body { width: 100%; height: 100%; background: #000; color: #fff; overflow-x: hidden; }
+    html, body { width: 100%; height: 100%; background: #000; color: #fff; overflow: hidden; }
     
     .jetx-wrapper {
-      width: 100%; height: 100vh; max-height: 100vh; background: var(--bg-dark);
-      display: flex; flex-direction: column; position: relative; margin: 0 auto; overflow: hidden;
+      width: 100%; height: 100vh; background: var(--bg-dark);
+      display: flex; flex-direction: column; position: relative; margin: 0 auto; max-width: 480px;
     }
 
-    /* 1. SmartSoft Brand Bar */
+    /* 1. Header */
     .brand-top-bar {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 12px 2px; background: #08090d; font-size: 10px; color: var(--text-gray); font-weight: bold; flex-shrink: 0;
+      padding: 6px 12px; background: #08090d; border-bottom: 1px solid #161822; flex-shrink: 0;
     }
-    .smartsoft-logo { display: flex; align-items: center; gap: 4px; color: #ff3344; font-weight: 900; }
-    .smartsoft-logo span { color: #fff; }
-
-    /* 2. JetX Subheader */
-    .jetx-header-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 2px 12px 6px; background: #08090d; border-bottom: 1px solid #161822; flex-shrink: 0;
-    }
-    .jetx-logo { font-size: 22px; font-weight: 900; font-style: italic; color: #fff; letter-spacing: -0.5px; }
+    .jetx-logo { font-size: 20px; font-weight: 900; font-style: italic; color: #fff; letter-spacing: -0.5px; }
     .jetx-logo span { color: var(--jet-yellow); }
-    .jetx-bal-box { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 900; color: var(--jet-yellow); }
-    .header-icons-right { display: flex; align-items: center; gap: 10px; color: var(--text-gray); cursor: pointer; }
+    .jetx-bal-box {
+      display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 900;
+      color: var(--jet-yellow); background: #141722; padding: 4px 10px; border-radius: 8px; border: 1px solid #232736;
+    }
 
-    /* 3. Multipliers History Ticker */
+    /* 2. Multipliers History Ticker */
     .history-ticker {
-      display: flex; align-items: center; gap: 4px; padding: 4px 10px; background: #0c0e15; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #1a1d2a; flex-shrink: 0;
+      display: flex; align-items: center; gap: 5px; padding: 5px 10px; background: #0c0e15;
+      overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #1a1d2a; flex-shrink: 0;
     }
     .history-ticker::-webkit-scrollbar { display: none; }
-    .mult-chip {
-      font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: #141722; white-space: nowrap;
-    }
+    .mult-chip { font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: #141722; white-space: nowrap; }
     .chip-green { color: #00e676; }
     .chip-yellow { color: #ffcc00; }
     .chip-red { color: #ff3344; }
 
-    /* 4. Canvas Flight Screen */
+    /* 3. Canvas Flight Screen */
     .flight-arena {
-      width: 100%; height: 210px; min-height: 200px; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1c202d; flex-shrink: 0;
+      width: 100%; height: 215px; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1c202d; flex-shrink: 0;
     }
     #flightCanvas { width: 100%; height: 100%; display: block; }
     
     .multiplier-overlay {
       position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; z-index: 5;
     }
-    .mult-text { font-size: 50px; font-weight: 900; color: #00e676; text-shadow: 0 0 20px rgba(0,230,118,0.4); }
+    .mult-text { font-size: 48px; font-weight: 900; color: #00e676; text-shadow: 0 0 20px rgba(0,230,118,0.4); }
     .mult-text.crashed { color: var(--jet-red) !important; text-shadow: 0 0 20px rgba(255,51,68,0.5); }
-    
-    .online-counter { position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; color: var(--jet-yellow); display: flex; align-items: center; gap: 4px; z-index: 5; }
 
     /* Runway Receiving State */
     .receiving-bets-banner {
       position: absolute; inset: 0; background: radial-gradient(circle at center, #1b1e2e 0%, #0c0d14 100%);
       display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 6;
     }
-    .runway-jet { font-size: 38px; animation: bounceJet 1s infinite alternate; }
-    .receiving-progress { width: 140px; height: 3px; background: #232736; border-radius: 2px; margin-top: 10px; overflow: hidden; }
+    .receiving-progress { width: 150px; height: 3px; background: #232736; border-radius: 2px; margin-top: 10px; overflow: hidden; }
     .receiving-fill { width: 0%; height: 100%; background: var(--jet-yellow); transition: width 0.1s linear; }
     .receiving-text { font-size: 12px; font-weight: 900; color: #fff; letter-spacing: 1px; margin-top: 8px; text-transform: uppercase; }
 
-    /* 5. Controls Top Toggles Bar */
-    .controls-top-toggle {
-      display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; background: #10121a; border-bottom: 1px solid #1c202d; font-size: 11px; font-weight: bold; color: var(--text-gray); flex-shrink: 0;
-    }
-    .btn-x2 { background: #1c202e; border: 1px solid #2d3348; color: var(--jet-yellow); font-weight: 900; padding: 3px 8px; border-radius: 4px; cursor: pointer; }
-    .toggle-group { display: flex; align-items: center; gap: 6px; }
-    .switch-sm { position: relative; display: inline-block; width: 28px; height: 16px; }
-    .switch-sm input { opacity: 0; width: 0; height: 0; }
-    .slider-sm { position: absolute; cursor: pointer; inset: 0; background-color: #232736; border-radius: 16px; transition: .2s; }
-    .slider-sm:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: white; border-radius: 50%; transition: .2s; }
-    input:checked + .slider-sm { background-color: var(--jet-yellow); }
-    input:checked + .slider-sm:before { transform: translateX(12px); background-color: #000; }
-
-    /* 6. Dual Yellow Bet Panels */
-    .bet-panels-wrapper { padding: 5px 8px; display: flex; flex-direction: column; gap: 5px; background: #0c0e15; flex-shrink: 0; }
+    /* 4. Dual Yellow Bet Panels */
+    .bet-panels-wrapper { padding: 6px 8px; display: flex; flex-direction: column; gap: 6px; background: #0c0e15; flex-shrink: 0; }
     
     .jet-panel {
-      background: #141722; border: 1px solid #232736; border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px;
+      background: #141722; border: 1px solid var(--border-color); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 4px;
     }
     .panel-grid-content { display: flex; gap: 8px; }
+    .panel-left-col { flex: 1.1; display: flex; flex-direction: column; gap: 4px; }
     
-    .panel-left-col { flex: 1.2; display: flex; flex-direction: column; gap: 4px; }
     .stepper-row {
-      display: flex; align-items: center; justify-content: space-between; background: #080a10; border: 1px solid #232736; border-radius: 4px; padding: 2px 6px;
+      display: flex; align-items: center; justify-content: space-between; background: #080a10; border: 1px solid #232736; border-radius: 6px; padding: 2px 6px;
     }
-    .step-btn { background: none; border: none; color: var(--text-gray); font-size: 18px; font-weight: bold; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-    .bet-input-box { width: 60px; background: transparent; border: none; color: var(--jet-yellow); font-size: 15px; font-weight: 900; text-align: center; outline: none; }
+    .step-btn { background: none; border: none; color: var(--text-gray); font-size: 16px; font-weight: bold; cursor: pointer; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .bet-input-box { width: 55px; background: transparent; border: none; color: var(--jet-yellow); font-size: 14px; font-weight: 900; text-align: center; outline: none; }
     
-    .quick-chips-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
-    .quick-chip-btn { background: #1c202d; border: 1px solid #282d3e; color: #aaa; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 4px 0; cursor: pointer; text-align: center; }
-    .quick-chip-btn.all-btn { color: var(--jet-yellow); font-weight: 900; }
-    .quick-chip-btn:hover { background: #282e42; }
+    .quick-chips-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .quick-chip-btn { background: #1c202d; border: 1px solid #282d3e; color: #cbd5e1; border-radius: 4px; font-size: 10px; font-weight: 800; padding: 3px 0; cursor: pointer; text-align: center; }
 
     .auto-collect-box {
-      display: flex; align-items: center; justify-content: space-between; background: #080a10; border: 1px solid #232736; border-radius: 4px; padding: 2px 6px;
+      display: flex; align-items: center; justify-content: space-between; background: #080a10; border: 1px solid #232736; border-radius: 6px; padding: 2px 6px;
     }
-    .collect-target-val { color: #8892b0; font-size: 13px; font-weight: bold; width: 50px; text-align: center; background: transparent; border: none; outline: none; }
+    .collect-target-val { color: #8892b0; font-size: 12px; font-weight: bold; width: 45px; text-align: center; background: transparent; border: none; outline: none; }
 
-    /* Main Solid Yellow Bet Button */
+    /* Main Bet Button */
     .jet-main-bet-btn {
-      flex: 1; background: var(--jet-yellow); color: #000; border: none; border-radius: 6px; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; transition: 0.15s; font-weight: 900;
+      flex: 1; background: var(--jet-yellow); color: #000; border: none; border-radius: 8px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; font-weight: 900; transition: 0.15s;
     }
-    .jet-main-bet-btn:hover { background: var(--jet-yellow-hover); }
-    .jet-main-bet-btn.state-collect {
-      background: var(--jet-green); color: #000; animation: pulseCollect 0.8s infinite alternate;
-    }
-    .jet-main-bet-btn.state-cancel {
-      background: #ff7700; color: #fff;
-    }
-    .jet-main-bet-btn.state-waiting {
-      background: #2b2408; color: var(--jet-yellow); border: 1px dashed var(--jet-yellow);
-    }
-    
-    .btn-amt-label { font-size: 13px; font-weight: 900; }
-    .btn-action-label { font-size: 17px; font-weight: 900; text-transform: uppercase; margin-top: -2px; }
+    .jet-main-bet-btn:active { transform: scale(0.97); }
+    .jet-main-bet-btn.state-collect { background: var(--jet-green); color: #000; animation: pulseCollect 0.8s infinite alternate; }
+    .jet-main-bet-btn.state-cancel { background: #ff7700; color: #fff; }
+    .jet-main-bet-btn.state-waiting { background: #2b2408; color: var(--jet-yellow); border: 1px dashed var(--jet-yellow); }
+    .btn-amt-label { font-size: 12px; font-weight: 900; }
+    .btn-action-label { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-top: -1px; }
 
-    /* 7. Bottom 5 Tabs & Tables Section */
+    /* 5. Live Players Feed */
     .live-players-section { flex: 1; min-height: 0; display: flex; flex-direction: column; background: #090a10; }
     .bottom-tabs-bar {
-      display: flex; background: #08090d; border-top: 1px solid #1c202d; border-bottom: 1px solid #1c202d; padding: 4px 4px; flex-shrink: 0;
+      display: flex; background: #08090d; border-top: 1px solid #1c202d; border-bottom: 1px solid #1c202d; padding: 4px 6px; flex-shrink: 0;
     }
-    .b-tab-item {
-      flex: 1; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-gray); cursor: pointer; padding-bottom: 4px; border-bottom: 2px solid transparent;
-    }
+    .b-tab-item { flex: 1; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-gray); cursor: pointer; padding: 4px 0; border-bottom: 2px solid transparent; }
     .b-tab-item.active { color: var(--jet-yellow); border-bottom-color: var(--jet-yellow); }
 
     .tab-view-container { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 8px; }
-    .tab-subview { display: none; }
-    .tab-subview.active { display: block; }
-
-    .table-header-row {
-      display: flex; justify-content: space-between; padding: 4px 8px; font-size: 10px; font-weight: bold; color: var(--text-gray); border-bottom: 1px solid #161822; background: #0c0e15;
-    }
     .player-row-item {
-      display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; font-size: 11px; font-weight: bold; border-bottom: 1px solid #12141c; color: #cbd5e1; transition: background 0.25s;
+      display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; font-size: 11px; font-weight: bold; border-bottom: 1px solid #12141c; color: #cbd5e1;
     }
-    .player-row-item.cashed-out { color: var(--jet-green); background: rgba(0, 230, 118, 0.08); }
-    .col-user { width: 95px; }
-    .col-bet { width: 70px; text-align: right; }
-    .col-collect { width: 60px; text-align: center; }
-    .col-win { width: 80px; text-align: right; }
+    .player-row-item.cashed-out { color: var(--jet-green); background: rgba(0, 230, 118, 0.08); border-radius: 4px; }
 
-    /* Clean Floating Collect Banner */
+    /* Clean Floating Banner */
     .clean-win-banner {
       position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(135deg, #ffcc00, #ffb300); color: #000; font-size: 13px; font-weight: 900;
       padding: 8px 20px; border-radius: 30px; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.6);
       z-index: 9999; display: none; animation: popWin 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-
-    @keyframes bounceJet { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
-    @keyframes pulseCollect {
-      0% { transform: scale(0.99); box-shadow: 0 0 6px rgba(0,230,118,0.4); }
-      100% { transform: scale(1.02); box-shadow: 0 0 16px rgba(0,230,118,0.8); }
-    }
+    @keyframes pulseCollect { 0% { box-shadow: 0 0 6px rgba(0,230,118,0.4); } 100% { box-shadow: 0 0 16px rgba(0,230,118,0.8); } }
     @keyframes popWin { 0% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } }
   </style>
 </head>
@@ -188,49 +138,25 @@
     🎉 <span id="winBannerText">+0.00 ETB Collected!</span>
   </div>
 
-  <!-- 1. SmartSoft Brand Bar -->
+  <!-- 1. Header -->
   <div class="brand-top-bar">
-    <div class="smartsoft-logo">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff3344"><polygon points="12 2 22 12 12 22 2 12"/></svg>
-      <span>SMARTSOFT</span> GAMING
-    </div>
-    <div id="liveClockDisplay">18:00:27</div>
-  </div>
-
-  <!-- 2. JetX Subheader -->
-  <div class="jetx-header-bar">
     <div class="jetx-logo">Jet<span>X</span></div>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <div class="jetx-bal-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffcc00"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h6" stroke="#000" stroke-width="2"/></svg>
-        <span id="userBalText">0.00</span> ETB
-      </div>
-      <div class="header-icons-right">
-        <!-- Master Sound Toggle (Default: Silent 🔇) -->
-        <span id="soundIcon" onclick="toggleGlobalAudio()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
-        </span>
-        <span onclick="switchBottomTab('chat', document.querySelectorAll('.b-tab-item')[3])">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </span>
-      </div>
+    <div class="jetx-bal-box">
+      <span>💰</span>
+      <span id="userBalText">0.00</span> ETB
     </div>
   </div>
 
-  <!-- 3. Multipliers History Ticker -->
+  <!-- 2. Multipliers History Ticker -->
   <div class="history-ticker" id="historyTicker">
     <span class="mult-chip chip-green">2.40x</span>
     <span class="mult-chip chip-yellow">1.17x</span>
     <span class="mult-chip chip-green">4.34x</span>
     <span class="mult-chip chip-red">1.24x</span>
-    <span class="mult-chip chip-green">2.99x</span>
     <span class="mult-chip chip-green">12.19x</span>
-    <span class="mult-chip chip-green">12.73x</span>
-    <span class="mult-chip chip-green">3.94x</span>
-    <span class="mult-chip chip-green">9.48x</span>
   </div>
 
-  <!-- 4. Canvas Flight Arena -->
+  <!-- 3. Canvas Flight Arena -->
   <div class="flight-arena">
     <canvas id="flightCanvas"></canvas>
     
@@ -238,14 +164,9 @@
       <div class="mult-text" id="liveMultiplierText">1.00 x</div>
     </div>
 
-    <div class="online-counter">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="#ffcc00"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span id="onlineViewersCount">128</span>
-    </div>
-
     <!-- Runway Receiving Bets State -->
     <div class="receiving-bets-banner" id="receivingBanner">
-      <div class="runway-jet">✈️</div>
+      <div style="font-size:36px;">✈️</div>
       <div class="receiving-progress">
         <div class="receiving-fill" id="receivingProgressFill"></div>
       </div>
@@ -253,20 +174,7 @@
     </div>
   </div>
 
-  <!-- 5. Controls Top Toggles Bar -->
-  <div class="controls-top-toggle">
-    <button class="btn-x2" onclick="multiplyBothBets(2)">X2</button>
-    <div class="toggle-group">
-      <span>AUTO BET</span>
-      <label class="switch-sm"><input type="checkbox" id="autoBetToggle"><span class="slider-sm"></span></label>
-    </div>
-    <div class="toggle-group">
-      <span>AUTO COLLECT</span>
-      <label class="switch-sm"><input type="checkbox" id="autoCollectToggle"><span class="slider-sm"></span></label>
-    </div>
-  </div>
-
-  <!-- 6. Dual Yellow Bet Panels -->
+  <!-- 4. Dual Bet Panels -->
   <div class="bet-panels-wrapper">
     <!-- PANEL 1 -->
     <div class="jet-panel" id="panel1">
@@ -274,18 +182,19 @@
         <div class="panel-left-col">
           <div class="stepper-row">
             <button class="step-btn" onclick="stepBetAmt(1, -1)">—</button>
-            <input type="number" id="betInput1" class="bet-input-box" value="2.00" step="1" min="1" max="1000">
+            <input type="number" id="betInput1" class="bet-input-box" value="4.00" min="1" step="1">
             <button class="step-btn" onclick="stepBetAmt(1, 1)">+</button>
           </div>
           <div class="quick-chips-row">
-            <div class="quick-chip-btn" onclick="setBetAmt(1, 20)">20.00</div>
-            <div class="quick-chip-btn" onclick="setBetAmt(1, 50)">50.00</div>
-            <div class="quick-chip-btn" onclick="setBetAmt(1, 100)">100.00</div>
-            <div class="quick-chip-btn all-btn" onclick="setBetAmt(1, realBalance)">ALL</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(1, 4)">4</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(1, 10)">10</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(1, 20)">20</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(1, 50)">50</div>
           </div>
         </div>
         
-        <div class="panel-left-col" style="flex: 0.8;">
+        <div class="panel-left-col" style="flex: 0.75;">
+          <div style="font-size:9px;color:var(--text-gray);font-weight:bold;text-align:center;">AUTO COLLECT</div>
           <div class="auto-collect-box">
             <button class="step-btn" onclick="stepCollectTarget(1, -0.1)">—</button>
             <input type="text" id="targetMultInput1" class="collect-target-val" value="2.00x">
@@ -294,7 +203,7 @@
         </div>
 
         <button class="jet-main-bet-btn" id="actionBtn1" onclick="handleJetBet(1)">
-          <div class="btn-amt-label" id="btnAmtLabel1">2.00 ETB</div>
+          <div class="btn-amt-label" id="btnAmtLabel1">4.00 ETB</div>
           <div class="btn-action-label" id="btnActionLabel1">BET</div>
         </button>
       </div>
@@ -306,18 +215,19 @@
         <div class="panel-left-col">
           <div class="stepper-row">
             <button class="step-btn" onclick="stepBetAmt(2, -1)">—</button>
-            <input type="number" id="betInput2" class="bet-input-box" value="2.00" step="1" min="1" max="1000">
+            <input type="number" id="betInput2" class="bet-input-box" value="4.00" min="1" step="1">
             <button class="step-btn" onclick="stepBetAmt(2, 1)">+</button>
           </div>
           <div class="quick-chips-row">
-            <div class="quick-chip-btn" onclick="setBetAmt(2, 20)">20.00</div>
-            <div class="quick-chip-btn" onclick="setBetAmt(2, 50)">50.00</div>
-            <div class="quick-chip-btn" onclick="setBetAmt(2, 100)">100.00</div>
-            <div class="quick-chip-btn all-btn" onclick="setBetAmt(2, realBalance)">ALL</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(2, 4)">4</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(2, 10)">10</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(2, 20)">20</div>
+            <div class="quick-chip-btn" onclick="setBetAmt(2, 50)">50</div>
           </div>
         </div>
         
-        <div class="panel-left-col" style="flex: 0.8;">
+        <div class="panel-left-col" style="flex: 0.75;">
+          <div style="font-size:9px;color:var(--text-gray);font-weight:bold;text-align:center;">AUTO COLLECT</div>
           <div class="auto-collect-box">
             <button class="step-btn" onclick="stepCollectTarget(2, -0.1)">—</button>
             <input type="text" id="targetMultInput2" class="collect-target-val" value="2.00x">
@@ -326,101 +236,49 @@
         </div>
 
         <button class="jet-main-bet-btn" id="actionBtn2" onclick="handleJetBet(2)">
-          <div class="btn-amt-label" id="btnAmtLabel2">2.00 ETB</div>
+          <div class="btn-amt-label" id="btnAmtLabel2">4.00 ETB</div>
           <div class="btn-action-label" id="btnActionLabel2">BET</div>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 7. Bottom 5 Tabs & Tables Section -->
+  <!-- 5. Bottom Tabs & Feed -->
   <div class="live-players-section">
     <div class="bottom-tabs-bar">
       <div class="b-tab-item active" onclick="switchBottomTab('players', this)">Players</div>
-      <div class="b-tab-item" onclick="switchBottomTab('history', this)">History</div>
       <div class="b-tab-item" onclick="switchBottomTab('mybets', this)">My Bets</div>
-      <div class="b-tab-item" onclick="switchBottomTab('chat', this)">Chat</div>
-      <div class="b-tab-item" onclick="switchBottomTab('stats', this)">Statistics</div>
     </div>
 
     <div class="tab-view-container">
-      <!-- 1. Players Tab -->
-      <div class="tab-subview active" id="tabViewPlayers">
-        <div class="table-header-row">
-          <div class="col-user">User ID</div>
-          <div class="col-bet">Bet</div>
-          <div class="col-collect">Collect</div>
-          <div class="col-win">Win</div>
-        </div>
-        <div id="playersTableBody"></div>
-      </div>
-
-      <!-- 2. History Tab -->
-      <div class="tab-subview" id="tabViewHistory">
-        <div id="historyTableBody"></div>
-      </div>
-
-      <!-- 3. My Bets Tab -->
-      <div class="tab-subview" id="tabViewMyBets">
-        <div id="myBetsTableBody">
-          <div style="text-align:center; color:var(--text-gray); font-size:11px; margin-top:20px;">No bets placed in this session</div>
-        </div>
-      </div>
-
-      <!-- 4. Chat Tab -->
-      <div class="tab-subview" id="tabViewChat">
-        <div style="display:flex; flex-direction:column; gap:6px; font-size:11px;" id="chatMessagesList">
-          <div style="color:var(--text-gray);"><b style="color:var(--jet-yellow);">ID: 589***21:</b> Let's get a 10x! 🚀</div>
-          <div style="color:var(--text-gray);"><b style="color:#38bdf8;">ID: 712***48:</b> Collected at 2.0x clean 🔥</div>
-        </div>
-      </div>
-
-      <!-- 5. Statistics Tab -->
-      <div class="tab-subview" id="tabViewStats">
-        <div style="padding:8px; font-size:11px; color:#cbd5e1; line-height:1.6;">
-          <div>🏆 <b>Highest Flight Today:</b> <span style="color:var(--jet-green);">45.80x</span></div>
-          <div>⏱ <b>Average Flight Time:</b> 8.4s</div>
-          <div>👥 <b>Active Bets Today:</b> 1,420</div>
-        </div>
-      </div>
+      <div id="tabViewPlayers"></div>
+      <div id="tabViewMyBets" style="display:none;"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // -------------------------------------------------------------
-  // 🚀 OFFICIAL PRODUCTION CONFIGURATION (RENDER + TELEGRAM)
-  // -------------------------------------------------------------
+  // ============================================================================
+  // 🚀 JET-X ENGINE - INTEGRATED WITH HULU BET RENDER BACKEND (/api/bet/play)
+  // ============================================================================
   const RENDER_BASE_URL = "https://hulubet-server.onrender.com";
 
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
-  }
+  // URL Injection: User ID & Balance from Main Lobby
+  const urlParams = new URLSearchParams(window.location.search);
+  let USER_ID = urlParams.get('userId') || "589218392";
+  let balance = parseFloat(urlParams.get('balance')) || 20.00;
 
-  let telegramUser = tg?.initDataUnsafe?.user || { id: 589218392, first_name: "Player" };
-  const TELEGRAM_ID = telegramUser.id;
-
-  // Clean Toast Message
   function triggerCleanWin(msg) {
     const banner = document.getElementById("cleanWinBanner");
     document.getElementById("winBannerText").innerText = msg;
     banner.style.display = "block";
-    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     setTimeout(() => { banner.style.display = "none"; }, 3500);
   }
 
-  // Audio Synthesizer Control
-  let isMuted = true;
+  // Audio Synthesizer
   let audioCtx = null;
-
-  function initAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
+  function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
   function playTone(freq, type, dur) {
-    if (isMuted) return;
     try {
       initAudio();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -428,202 +286,107 @@
       const gain = audioCtx.createGain();
       osc.type = type;
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + dur);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + dur);
     } catch(e) {}
   }
-
   const SOUNDS = {
     collect: () => { playTone(900, 'triangle', 0.1); setTimeout(() => playTone(1300, 'triangle', 0.2), 70); },
     crash: () => playTone(130, 'sawtooth', 0.35),
-    click: () => playTone(600, 'sine', 0.04)
+    click: () => playTone(600, 'sine', 0.03)
   };
 
-  function toggleGlobalAudio() {
-    isMuted = !isMuted;
-    renderAudioIcon();
-  }
-
-  function renderAudioIcon() {
-    const el = document.getElementById("soundIcon");
-    if (isMuted) {
-      el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff5252" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>`;
-    } else {
-      el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
-    }
-  }
-
-  // Live Digital Clock
-  setInterval(() => {
-    const d = new Date();
-    document.getElementById("liveClockDisplay").innerText = d.toTimeString().split(' ')[0];
-  }, 1000);
-
-  // -------------------------------------------------------------
-  // 🔐 100% REAL DATABASE SYNC (NO LOCAL BALANCE MOCKS)
-  // -------------------------------------------------------------
-  let realBalance = 0.00;
-
-  async function syncDatabaseBalance() {
-    try {
-      const res = await fetch(`${RENDER_BASE_URL}/api/auth/sync`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-telegram-init-data": tg?.initData || ""
-        },
-        body: JSON.stringify({
-          telegram_id: TELEGRAM_ID,
-          username: telegramUser.username || null,
-          first_name: telegramUser.first_name || "Player"
-        })
-      });
-
-      const data = await res.json();
-      if (data.success && data.user) {
-        realBalance = Number(parseFloat(data.user.balance).toFixed(2));
-        updateBalanceDisplay();
-      }
-    } catch(e) {
-      console.error("DB Sync Error:", e);
-    }
-  }
-
-  function updateBalanceDisplay() {
-    document.getElementById("userBalText").innerText = realBalance.toFixed(2);
-    try {
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: "BALANCE_UPDATE", newBalance: realBalance }, "*");
-      }
-    } catch(e) {}
-  }
-
-  syncDatabaseBalance();
-
-  // -------------------------------------------------------------
-  // 📐 UNIVERSAL INVARIANT CURVE (GOLDEN RULE #1 & #2)
-  // 1s = 1.07x | 3s = 1.32x | 5s = 2.00x
-  // -------------------------------------------------------------
-  function getUniversalMultiplier(t) {
-    if (t <= 0) return 1.00;
-    return Number((1.00 + (0.05 * t) + (0.03 * Math.pow(t, 1.55))).toFixed(2));
-  }
-
+  // State Management
   let gameState = "RECEIVING"; // RECEIVING | FLYING | CRASHED
   let currentMultiplier = 1.00;
+  let targetCrashMultiplier = 1.00;
   let flightStartTime = 0;
-  let currentRoundCrashMult = 1.00;
   let animationFrameId = null;
 
   const bets = {
-    1: { state: 'IDLE', amount: 2.00, targetCollect: 2.00, betId: null },
-    2: { state: 'IDLE', amount: 2.00, targetCollect: 2.00, betId: null }
+    1: { state: 'IDLE', amount: 4.00, targetCollect: 2.00, serverData: null },
+    2: { state: 'IDLE', amount: 4.00, targetCollect: 2.00, serverData: null }
   };
 
   let mySessionBetsLog = [];
-  let liveSimulatedPlayers = [];
+  let parachutes = [];
 
-  // -------------------------------------------------------------
-  // 🚀 REALISTIC JETX CANVAS ENGINE (INVARIANT TRAJECTORY)
-  // -------------------------------------------------------------
+  function updateBalanceDisplay() {
+    document.getElementById("userBalText").innerText = balance.toFixed(2);
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "BALANCE_UPDATE", newBalance: balance }, "*");
+      }
+    } catch(e) {}
+  }
+  updateBalanceDisplay();
+
+  // Handshake with Lobby
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: "GAME_READY" }, "*");
+  }
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'INIT_BALANCE' || e.data?.type === 'UPDATE_BALANCE') {
+      if (e.data.balance !== undefined) { balance = parseFloat(e.data.balance); updateBalanceDisplay(); }
+      if (e.data.userId) USER_ID = String(e.data.userId);
+    }
+  });
+
+  // Canvas Engine
   const canvas = document.getElementById("flightCanvas");
   const ctx = canvas.getContext("2d");
-
-  function resizeCanvas() {
-    canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.parentElement.clientHeight;
-  }
+  function resizeCanvas() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
   window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
 
-  let parachutes = [];
-
-  function drawFlightArena(elapsedSec, mult) {
+  function drawFlightArena(mult) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = canvas.width, h = canvas.height;
 
-    // Atmospheric Altitude Sky Gradient based on multiplier
+    // Atmospheric Altitude Sky Gradient
     const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
     if (mult < 2.0) {
-      skyGrad.addColorStop(0, "#7679a8");
-      skyGrad.addColorStop(0.6, "#c49da4");
-      skyGrad.addColorStop(1, "#dfb5b0");
+      skyGrad.addColorStop(0, "#3a568c"); skyGrad.addColorStop(1, "#8fa6cc");
+    } else if (mult < 8.0) {
+      skyGrad.addColorStop(0, "#121b2d"); skyGrad.addColorStop(1, "#2a3b5c");
     } else {
-      skyGrad.addColorStop(0, "#3a568c");
-      skyGrad.addColorStop(0.5, "#5d78a8");
-      skyGrad.addColorStop(1, "#8fa6cc");
+      skyGrad.addColorStop(0, "#050608"); skyGrad.addColorStop(1, "#0d111a");
     }
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, w, h);
-
-    drawClouds(w, h, mult);
+    ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, w, h);
 
     if (gameState === "FLYING") {
-      // Invariant Trajectory completely decoupled from future crash point
-      const normProgressX = 1 - Math.exp(-elapsedSec / 6.5);
-      const normProgressY = 1 - Math.exp(-elapsedSec / 5.5);
-
-      const jetX = 30 + (w - 110) * normProgressX;
-      const jetY = (h - 40) - (h - 90) * normProgressY;
+      const progress = Math.min(1, (mult - 1.0) / 4.0);
+      const jetX = 30 + (w - 110) * Math.pow(progress, 0.75);
+      const jetY = (h - 40) - (h - 90) * Math.pow(progress, 0.85);
 
       drawMilitaryJet(jetX, jetY);
       drawParachutes(w, h);
     }
   }
 
-  function drawClouds(w, h, mult) {
-    ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
-    ctx.beginPath();
-    ctx.arc((w * 0.3) - (mult * 12) % w, h * 0.4, 40, 0, Math.PI * 2);
-    ctx.arc((w * 0.45) - (mult * 12) % w, h * 0.35, 55, 0, Math.PI * 2);
-    ctx.arc((w * 0.6) - (mult * 12) % w, h * 0.45, 45, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
   function drawMilitaryJet(x, y) {
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(-0.35);
+    ctx.rotate(-0.32);
 
     // Afterburner Flame
     ctx.fillStyle = "#ff6600";
     ctx.beginPath();
-    ctx.moveTo(-24, 0);
-    ctx.lineTo(-40 - Math.random() * 8, -3);
-    ctx.lineTo(-32, 0);
-    ctx.lineTo(-40 - Math.random() * 8, 3);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = "#ffcc00";
-    ctx.beginPath();
-    ctx.moveTo(-24, 0); ctx.lineTo(-32, -2); ctx.lineTo(-28, 0); ctx.lineTo(-32, 2);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(-24, 0); ctx.lineTo(-38 - Math.random() * 8, -3); ctx.lineTo(-30, 0); ctx.lineTo(-38 - Math.random() * 8, 3);
+    ctx.closePath(); ctx.fill();
 
     // Fuselage
     ctx.fillStyle = "#ffcc00";
     ctx.beginPath();
     ctx.moveTo(22, 0); ctx.lineTo(-18, -6); ctx.lineTo(-24, 0); ctx.lineTo(-18, 6);
-    ctx.closePath();
-    ctx.fill();
+    ctx.closePath(); ctx.fill();
 
     // Wings
     ctx.fillStyle = "#333d4d";
-    ctx.beginPath();
-    ctx.moveTo(-4, -14); ctx.lineTo(6, -2); ctx.lineTo(-12, -2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(-16, 0); ctx.lineTo(-24, -10); ctx.lineTo(-20, 0);
-    ctx.closePath();
-    ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-4, -14); ctx.lineTo(6, -2); ctx.lineTo(-12, -2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-24, -10); ctx.lineTo(-20, 0); ctx.closePath(); ctx.fill();
 
     ctx.restore();
   }
@@ -631,28 +394,15 @@
   function drawParachutes(w, h) {
     parachutes.forEach((p, idx) => {
       p.y += 0.8;
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.arc(0, 0, 8, Math.PI, 0);
-      ctx.fill();
-      ctx.strokeStyle = "#444";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(-8, 0); ctx.lineTo(0, 10);
-      ctx.moveTo(8, 0); ctx.lineTo(0, 10);
-      ctx.stroke();
-      ctx.fillStyle = "#ffcc00";
-      ctx.fillRect(-2, 10, 4, 6);
+      ctx.save(); ctx.translate(p.x, p.y);
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(0, 0, 8, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = "#ffcc00"; ctx.fillRect(-2, 10, 4, 6);
       ctx.restore();
       if (p.y > h) parachutes.splice(idx, 1);
     });
   }
 
-  // -------------------------------------------------------------
-  // 🕹️ GAMEPLAY LOOP & FLIGHT CONTROLLER
-  // -------------------------------------------------------------
+  // Receiving Bets Phase
   function startReceivingBetsPhase() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     gameState = "RECEIVING";
@@ -665,16 +415,9 @@
     let fillWidth = 0;
     const fillEl = document.getElementById("receivingProgressFill");
 
-    if (document.getElementById("autoBetToggle").checked) {
-      [1, 2].forEach(id => {
-        if (bets[id].state === 'IDLE') queueAutoBet(id);
-      });
-    }
-
     const timer = setInterval(() => {
-      fillWidth += 2;
+      fillWidth += 2.5;
       fillEl.style.width = Math.min(100, fillWidth) + "%";
-
       if (fillWidth >= 100) {
         clearInterval(timer);
         document.getElementById("receivingBanner").style.display = "none";
@@ -683,18 +426,10 @@
     }, 100);
   }
 
-  function generateServerCrashPoint() {
-    const roll = Math.random() * 100;
-    if (roll <= 8.5) return Number((1.00 + Math.random() * 0.12).toFixed(2));
-    else if (roll <= 70.0) return Number((1.20 + Math.random() * 1.55).toFixed(2));
-    else if (roll <= 93.0) return Number((2.80 + Math.random() * 4.20).toFixed(2));
-    else return Number((8.00 + Math.random() * 50.00).toFixed(2));
-  }
-
-  function launchJetFlight() {
+  // Launch Flight (Consults Render Server /api/bet/play with gameName: "JetX")
+  async function launchJetFlight() {
     gameState = "FLYING";
     currentMultiplier = 1.00;
-    currentRoundCrashMult = generateServerCrashPoint();
     flightStartTime = performance.now();
     parachutes = [];
 
@@ -702,25 +437,50 @@
     multText.style.display = "block";
     multText.className = "mult-text";
 
-    [1, 2].forEach(id => {
+    let hasBet = false;
+    for (let id of [1, 2]) {
       if (bets[id].state === 'QUEUED') {
         bets[id].state = 'IN_FLIGHT';
         updatePanelButtonUI(id);
-      }
-    });
+        hasBet = true;
 
-    initLiveSimulatedPlayers();
+        try {
+          const res = await fetch(`${RENDER_BASE_URL}/api/bet/play`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: USER_ID,
+              gameName: "JetX",
+              betAmount: bets[id].amount,
+              clientData: {}
+            })
+          });
+          const d = await res.json();
+          if (d.success) {
+            bets[id].serverData = d;
+            targetCrashMultiplier = d.visualOutcome?.crashPoint || d.multiplier || 1.50;
+          } else {
+            targetCrashMultiplier = 1.15;
+          }
+        } catch(e) {
+          targetCrashMultiplier = 1.30;
+        }
+      }
+    }
+
+    if (!hasBet) {
+      targetCrashMultiplier = Number((1.12 + Math.random() * 2.7).toFixed(2));
+    }
+
+    renderDemoPlayersFeed();
     runFlightLoop();
   }
 
   function runFlightLoop() {
     if (gameState !== "FLYING") return;
-
     const now = performance.now();
-    const elapsedSec = Math.max(0, (now - flightStartTime) / 1000);
-
-    // Exact Invariant Multiplier Calculation
-    currentMultiplier = getUniversalMultiplier(elapsedSec);
+    const elapsed = Math.max(0, (now - flightStartTime) / 1000);
+    currentMultiplier = Number((1.00 + (0.065 * elapsed) + (0.035 * Math.pow(elapsed, 1.48))).toFixed(2));
     document.getElementById("liveMultiplierText").innerText = currentMultiplier.toFixed(2) + " x";
 
     // Auto-Collect Check & Button Update
@@ -731,168 +491,92 @@
         document.getElementById(`btnAmtLabel${id}`).innerText = `${liveWin} ETB`;
         document.getElementById(`btnActionLabel${id}`).innerText = "COLLECT";
 
-        const autoColOn = document.getElementById("autoCollectToggle").checked;
-        if (autoColOn && currentMultiplier >= b.targetCollect) {
+        if (currentMultiplier >= b.targetCollect) {
           executeCollect(id);
         }
       }
     });
 
-    // Update Live Players Collect
-    updateDemoPlayersCollect(currentMultiplier);
+    drawFlightArena(currentMultiplier);
 
-    drawFlightArena(elapsedSec, currentMultiplier);
-
-    if (currentMultiplier >= currentRoundCrashMult) {
-      triggerJetCrash(currentRoundCrashMult);
+    if (currentMultiplier >= targetCrashMultiplier) {
+      triggerJetCrash();
     } else {
       animationFrameId = requestAnimationFrame(runFlightLoop);
     }
   }
 
-  function triggerJetCrash(finalCrashMult) {
+  function triggerJetCrash() {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     gameState = "CRASHED";
     SOUNDS.crash();
-    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
 
     const multText = document.getElementById("liveMultiplierText");
     multText.className = "mult-text crashed";
-    multText.innerText = finalCrashMult.toFixed(2) + " x";
+    multText.innerText = targetCrashMultiplier.toFixed(2) + " x";
 
     [1, 2].forEach(id => {
       if (bets[id].state === 'IN_FLIGHT') {
         mySessionBetsLog.unshift({ bet: bets[id].amount, mult: 0, win: 0, status: 'LOST' });
         bets[id].state = 'IDLE';
-        bets[id].betId = null;
         updatePanelButtonUI(id);
       }
     });
 
-    addMultiplierToTicker(finalCrashMult);
-    renderMyBetsTable();
-    drawFlightArena((performance.now() - flightStartTime) / 1000, finalCrashMult);
+    const ticker = document.getElementById("historyTicker");
+    const chip = document.createElement("span");
+    chip.className = `mult-chip ${targetCrashMultiplier >= 2 ? 'chip-green' : targetCrashMultiplier >= 1.5 ? 'chip-yellow' : 'chip-red'}`;
+    chip.innerText = targetCrashMultiplier.toFixed(2) + "x";
+    ticker.prepend(chip);
 
-    setTimeout(() => {
-      startReceivingBetsPhase();
-    }, 2800);
+    drawFlightArena(targetCrashMultiplier);
+    setTimeout(() => { startReceivingBetsPhase(); }, 2800);
   }
 
-  // -------------------------------------------------------------
-  // 💰 ATOMIC BET PLACEMENT & CASHOUT
-  // -------------------------------------------------------------
-  async function handleJetBet(id) {
+  function handleJetBet(id) {
     const b = bets[id];
     const amt = Number(document.getElementById(`betInput${id}`).value);
 
-    // Max Bet Cap (Golden Rule #5)
-    if (amt > 1000.00) {
-      triggerCleanWin("Max Bet limit is 1,000.00 ETB!");
-      return;
-    }
-
     if (b.state === 'IDLE') {
-      if (amt > realBalance) {
-        triggerCleanWin("Insufficient Balance");
+      if (amt > balance) {
+        if (window.parent && window.parent !== window) window.parent.postMessage({ type: "OPEN_DEPOSIT" }, "*");
         return;
       }
-
+      balance -= amt;
+      updateBalanceDisplay();
+      b.amount = amt;
+      b.state = 'QUEUED';
+      updatePanelButtonUI(id);
       SOUNDS.click();
-
-      try {
-        const res = await fetch(`${RENDER_BASE_URL}/api/bet/place`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            telegram_id: TELEGRAM_ID,
-            game: "JETX",
-            bet_amount: amt,
-            round_data: { panel: id }
-          })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          realBalance = Number(data.remaining_balance);
-          updateBalanceDisplay();
-          b.amount = amt;
-          b.betId = data.bet_id;
-          b.state = 'QUEUED';
-          updatePanelButtonUI(id);
-        } else {
-          triggerCleanWin(data.error || "Insufficient Balance");
-        }
-      } catch(err) {
-        triggerCleanWin("Connection error to server");
-      }
     } else if (b.state === 'QUEUED') {
-      triggerCleanWin("Bet is queued for next flight");
+      balance += b.amount;
+      updateBalanceDisplay();
+      b.state = 'IDLE';
+      updatePanelButtonUI(id);
+      SOUNDS.click();
     } else if (b.state === 'IN_FLIGHT') {
       executeCollect(id);
     }
   }
 
-  async function queueAutoBet(id) {
-    const amt = Number(document.getElementById(`betInput${id}`).value);
-    if (amt <= realBalance) {
-      try {
-        const res = await fetch(`${RENDER_BASE_URL}/api/bet/place`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            telegram_id: TELEGRAM_ID,
-            game: "JETX",
-            bet_amount: amt,
-            round_data: { panel: id }
-          })
-        });
-        const data = await res.json();
-        if (data.success) {
-          realBalance = Number(data.remaining_balance);
-          updateBalanceDisplay();
-          bets[id].amount = amt;
-          bets[id].betId = data.bet_id;
-          bets[id].state = 'QUEUED';
-          updatePanelButtonUI(id);
-        }
-      } catch(e) {}
-    }
-  }
-
-  async function executeCollect(id) {
+  function executeCollect(id) {
     const b = bets[id];
-    if (b.state !== 'IN_FLIGHT' || !b.betId) return;
+    if (b.state !== 'IN_FLIGHT') return;
 
-    const elapsed = Math.max(0, (performance.now() - flightStartTime) / 1000);
+    const winAmt = Number((b.amount * currentMultiplier).toFixed(2));
+    b.state = 'IDLE';
+    balance += winAmt;
+    if (b.serverData && b.serverData.newBalance) balance = b.serverData.newBalance;
 
-    try {
-      const res = await fetch(`${RENDER_BASE_URL}/api/bet/cashout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bet_id: b.betId,
-          elapsed_seconds: elapsed,
-          client_multiplier: currentMultiplier
-        })
-      });
+    updateBalanceDisplay();
+    SOUNDS.collect();
+    updatePanelButtonUI(id);
 
-      const data = await res.json();
-      if (data.success && data.status === "WON") {
-        realBalance = Number(data.current_balance);
-        updateBalanceDisplay();
-        SOUNDS.collect();
-        b.state = 'IDLE';
-        b.betId = null;
-        updatePanelButtonUI(id);
-        mySessionBetsLog.unshift({ bet: b.amount, mult: data.multiplier, win: data.win_amount, status: 'WON' });
-        renderMyBetsTable();
-        triggerCleanWin(`🎉 +${data.win_amount.toFixed(2)} ETB Collected @ ${data.multiplier.toFixed(2)}x!`);
-      } else {
-        triggerCleanWin(data.error || "Collect Rejected by Server");
-      }
-    } catch(err) {
-      triggerCleanWin("Network latency error during collect");
-    }
+    // Drop Parachute on Collect
+    parachutes.push({ x: 30 + Math.random() * (canvas.width - 80), y: 30 + Math.random() * 40 });
+
+    mySessionBetsLog.unshift({ bet: b.amount, mult: currentMultiplier, win: winAmt, status: 'WON' });
+    triggerCleanWin(`🎉 +${winAmt.toFixed(2)} ETB Collected @ ${currentMultiplier.toFixed(2)}x!`);
   }
 
   function updatePanelButtonUI(id) {
@@ -900,22 +584,15 @@
     const btn = document.getElementById(`actionBtn${id}`);
     const amtLabel = document.getElementById(`btnAmtLabel${id}`);
     const actionLabel = document.getElementById(`btnActionLabel${id}`);
-
     btn.className = "jet-main-bet-btn";
 
     if (b.state === 'IDLE') {
       amtLabel.innerText = `${Number(document.getElementById(`betInput${id}`).value).toFixed(2)} ETB`;
       actionLabel.innerText = "BET";
     } else if (b.state === 'QUEUED') {
-      if (gameState === "FLYING") {
-        btn.classList.add("state-waiting");
-        amtLabel.innerText = "WAITING...";
-        actionLabel.innerText = "Next Round";
-      } else {
-        btn.classList.add("state-cancel");
-        amtLabel.innerText = `${b.amount.toFixed(2)} ETB`;
-        actionLabel.innerText = "Queued";
-      }
+      btn.classList.add("state-cancel");
+      amtLabel.innerText = `${b.amount.toFixed(2)} ETB`;
+      actionLabel.innerText = "CANCEL";
     } else if (b.state === 'IN_FLIGHT') {
       btn.classList.add("state-collect");
     }
@@ -924,18 +601,15 @@
   function stepBetAmt(id, val) {
     SOUNDS.click();
     const el = document.getElementById(`betInput${id}`);
-    const next = Math.max(1, Math.min(1000, Number(el.value) + val));
-    el.value = next.toFixed(2);
+    el.value = Math.max(1, Number(el.value) + val).toFixed(2);
     if (bets[id].state === 'IDLE') updatePanelButtonUI(id);
   }
-
   function setBetAmt(id, val) {
     SOUNDS.click();
     const el = document.getElementById(`betInput${id}`);
-    el.value = Math.min(1000, Number(val)).toFixed(2);
+    el.value = Number(val).toFixed(2);
     if (bets[id].state === 'IDLE') updatePanelButtonUI(id);
   }
-
   function stepCollectTarget(id, val) {
     const el = document.getElementById(`targetMultInput${id}`);
     let cur = parseFloat(el.value) || 2.0;
@@ -944,103 +618,40 @@
     bets[id].targetCollect = cur;
   }
 
-  function multiplyBothBets(fac) {
-    SOUNDS.click();
-    setBetAmt(1, Number(document.getElementById("betInput1").value) * fac);
-    setBetAmt(2, Number(document.getElementById("betInput2").value) * fac);
-  }
-
-  function addMultiplierToTicker(mult) {
-    const ticker = document.getElementById("historyTicker");
-    const chip = document.createElement("span");
-    chip.className = `mult-chip ${mult >= 2 ? 'chip-green' : mult >= 1.5 ? 'chip-yellow' : 'chip-red'}`;
-    chip.innerText = mult.toFixed(2) + "x";
-    ticker.prepend(chip);
-
-    const histTable = document.getElementById("historyTableBody");
-    histTable.insertAdjacentHTML('afterbegin', `
-      <div class="player-row-item">
-        <div>Round ID: ${Math.floor(10000 + Math.random() * 90000)}</div>
-        <div style="color:${mult >= 2 ? 'var(--jet-green)' : mult >= 1.5 ? 'var(--jet-yellow)' : 'var(--jet-red)'};">${mult.toFixed(2)}x</div>
-      </div>
-    `);
-  }
-
-  // -------------------------------------------------------------
-  // 👥 LIVE ID-BASED PLAYERS & FUNCTIONAL TABS
-  // -------------------------------------------------------------
-  function initLiveSimulatedPlayers() {
-    liveSimulatedPlayers = [
-      { user: "ID: 589***21", bet: 50.00, target: 2.00, cashed: false },
-      { user: "ID: 941***04", bet: 20.00, target: 3.50, cashed: false },
-      { user: "ID: 712***48", bet: 13.53, target: 1.66, cashed: false },
-      { user: "ID: 402***19", bet: 10.00, target: 1.84, cashed: false }
+  function renderDemoPlayersFeed() {
+    const demo = [
+      { user: "a8de2f", bet: 20.00, target: 1.85 },
+      { user: "d1e1e2", bet: 50.00, target: 2.40 },
+      { user: "94e98e", bet: 10.00, target: 1.50 }
     ];
-    renderLivePlayersTable();
-  }
-
-  function renderLivePlayersTable() {
-    const tbody = document.getElementById("playersTableBody");
-    tbody.innerHTML = liveSimulatedPlayers.map((p, idx) => `
-      <div class="player-row-item ${p.cashed ? 'cashed-out' : ''}" id="p-row-${idx}">
-        <div class="col-user">${p.user}</div>
-        <div class="col-bet">${p.bet.toFixed(2)} ETB</div>
-        <div class="col-collect" id="p-col-${idx}">${p.cashed ? p.target.toFixed(2) + 'x' : '--'}</div>
-        <div class="col-win" id="p-win-${idx}">${p.cashed ? (p.bet * p.target).toFixed(2) + ' ETB' : '--'}</div>
-      </div>
-    `).join('');
-  }
-
-  function updateDemoPlayersCollect(mult) {
-    liveSimulatedPlayers.forEach((p, idx) => {
-      if (!p.cashed && mult >= p.target && mult < currentRoundCrashMult) {
-        p.cashed = true;
-        const row = document.getElementById(`p-row-${idx}`);
-        if (row) row.classList.add("cashed-out");
-        const colC = document.getElementById(`p-col-${idx}`);
-        if (colC) colC.innerText = p.target.toFixed(2) + "x";
-        const colW = document.getElementById(`p-win-${idx}`);
-        if (colW) colW.innerText = (p.bet * p.target).toFixed(2) + " ETB";
-
-        // Drop parachute
-        if (parachutes.length < 5) {
-          parachutes.push({ x: 30 + Math.random() * (canvas.width - 80), y: 30 + Math.random() * 40 });
-        }
-      }
-    });
-  }
-
-  function renderMyBetsTable() {
-    const tbody = document.getElementById("myBetsTableBody");
-    if (mySessionBetsLog.length === 0) return;
-    tbody.innerHTML = mySessionBetsLog.map(b => `
-      <div class="player-row-item ${b.status === 'WON' ? 'cashed-out' : ''}">
-        <div>Bet: ${b.bet.toFixed(2)} ETB</div>
-        <div>${b.mult > 0 ? b.mult.toFixed(2) + 'x' : 'Crashed'}</div>
-        <div style="color:${b.status === 'WON' ? 'var(--jet-green)' : 'var(--jet-red)'}; font-weight:900;">
-          ${b.status === 'WON' ? '+' + b.win.toFixed(2) + ' ETB' : '0.00 ETB'}
-        </div>
+    document.getElementById("tabViewPlayers").innerHTML = demo.map(p => `
+      <div class="player-row-item">
+        <span>👤 ${p.user}</span>
+        <span>${p.bet.toFixed(2)} ETB</span>
+        <span style="color:var(--jet-yellow);">${p.target.toFixed(2)}x</span>
       </div>
     `).join('');
   }
 
   function switchBottomTab(tabKey, el) {
-    SOUNDS.click();
     document.querySelectorAll(".b-tab-item").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".tab-subview").forEach(v => v.classList.remove("active"));
-
     el.classList.add("active");
-    const viewMap = {
-      players: "tabViewPlayers",
-      history: "tabViewHistory",
-      mybets: "tabViewMyBets",
-      chat: "tabViewChat",
-      stats: "tabViewStats"
-    };
-    document.getElementById(viewMap[tabKey]).classList.add("active");
+    if (tabKey === 'players') {
+      document.getElementById("tabViewPlayers").style.display = "block";
+      document.getElementById("tabViewMyBets").style.display = "none";
+    } else {
+      document.getElementById("tabViewPlayers").style.display = "none";
+      document.getElementById("tabViewMyBets").style.display = "block";
+      document.getElementById("tabViewMyBets").innerHTML = mySessionBetsLog.length ? mySessionBetsLog.map(b => `
+        <div class="player-row-item ${b.status === 'WON' ? 'cashed-out' : ''}">
+          <span>Bet: ${b.bet.toFixed(2)} ETB</span>
+          <span>${b.mult > 0 ? b.mult.toFixed(2) + 'x' : 'Crashed'}</span>
+          <span>${b.status === 'WON' ? '+' + b.win.toFixed(2) + ' ETB' : '0.00'}</span>
+        </div>
+      `).join('') : '<div style="text-align:center;color:var(--text-gray);font-size:11px;padding:20px;">No bets yet</div>';
+    }
   }
 
-  // Launch JetX Engine
   startReceivingBetsPhase();
 </script>
 </body>
