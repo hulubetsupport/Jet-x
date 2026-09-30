@@ -1,354 +1,1877 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>JetX - Hulu Bet</title>
-<style>
-:root{--bg-dark:#0a0b10;--border-color:#232736;--jet-yellow:#ffcc00;--jet-green:#00e676;--jet-red:#ff3344;--text-gray:#7d849b}
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden}
-.jetx-wrapper{width:100%;height:100vh;background:var(--bg-dark);display:flex;flex-direction:column;position:relative;margin:0 auto;max-width:480px}
-.brand-top-bar{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#08090d;border-bottom:1px solid #161822;flex-shrink:0}
-.jetx-logo{font-size:20px;font-weight:900;font-style:italic;color:#fff}.jetx-logo span{color:var(--jet-yellow)}
-.jetx-bal-box{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:var(--jet-yellow);background:#141722;padding:4px 10px;border-radius:8px;border:1px solid #232736}
-.history-ticker{display:flex;align-items:center;gap:5px;padding:5px 10px;background:#0c0e15;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #1a1d2a;flex-shrink:0;min-height:26px}
-.history-ticker::-webkit-scrollbar{display:none}
-.mult-chip{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:#141722;white-space:nowrap}
-.chip-green{color:#00e676}.chip-yellow{color:#ffcc00}.chip-red{color:#ff3344}
-.flight-arena{width:100%;height:215px;background:#000;position:relative;overflow:hidden;border-bottom:1px solid #1c202d;flex-shrink:0}
-#flightCanvas{width:100%;height:100%;display:block}
-.multiplier-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:5}
-.mult-text{font-size:48px;font-weight:900;color:#00e676;text-shadow:0 0 20px rgba(0,230,118,.4)}
-.mult-text.crashed{color:var(--jet-red)!important;text-shadow:0 0 20px rgba(255,51,68,.5)}
-.receiving-bets-banner{position:absolute;inset:0;background:radial-gradient(circle at center,#1b1e2e 0%,#0c0d14 100%);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:6}
-.receiving-progress{width:150px;height:3px;background:#232736;border-radius:2px;margin-top:10px;overflow:hidden}
-.receiving-fill{width:0%;height:100%;background:var(--jet-yellow);transition:width .1s linear}
-.receiving-text{font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;margin-top:8px;text-transform:uppercase}
-.bet-panels-wrapper{padding:6px 8px;display:flex;flex-direction:column;gap:6px;background:#0c0e15;flex-shrink:0}
-.jet-panel{background:#141722;border:1px solid var(--border-color);border-radius:10px;padding:6px 8px}
-.panel-grid-content{display:flex;gap:8px}
-.panel-left-col{flex:1.1;display:flex;flex-direction:column;gap:4px}
-.stepper-row,.auto-collect-box{display:flex;align-items:center;justify-content:space-between;background:#080a10;border:1px solid #232736;border-radius:6px;padding:2px 6px}
-.step-btn{background:none;border:none;color:var(--text-gray);font-size:16px;font-weight:bold;cursor:pointer;width:22px;height:22px}
-.bet-input-box{width:55px;background:transparent;border:none;color:var(--jet-yellow);font-size:14px;font-weight:900;text-align:center;outline:none}
-.quick-chips-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.quick-chip-btn{background:#1c202d;border:1px solid #282d3e;color:#cbd5e1;border-radius:4px;font-size:10px;font-weight:800;padding:3px 0;cursor:pointer;text-align:center}
-.collect-target-val{color:#8892b0;font-size:12px;font-weight:bold;width:45px;text-align:center;background:transparent;border:none;outline:none}
-.auto-label{font-size:9px;color:var(--text-gray);font-weight:bold;text-align:center;cursor:pointer}
-.auto-label.on{color:var(--jet-yellow)}
-.jet-main-bet-btn{flex:1;background:var(--jet-yellow);color:#000;border:none;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;font-weight:900;transition:.15s}
-.jet-main-bet-btn:active{transform:scale(.97)}
-.jet-main-bet-btn.state-collect{background:var(--jet-green);animation:pulseCollect .8s infinite alternate}
-.jet-main-bet-btn.state-cancel{background:#ff7700;color:#fff}
-.btn-amt-label{font-size:12px;font-weight:900}.btn-action-label{font-size:16px;font-weight:900;text-transform:uppercase;margin-top:-1px}
-.live-players-section{flex:1;min-height:0;display:flex;flex-direction:column;background:#090a10}
-.bottom-tabs-bar{display:flex;background:#08090d;border-top:1px solid #1c202d;border-bottom:1px solid #1c202d;padding:4px 6px;flex-shrink:0}
-.b-tab-item{flex:1;text-align:center;font-size:11px;font-weight:bold;color:var(--text-gray);cursor:pointer;padding:4px 0;border-bottom:2px solid transparent}
-.b-tab-item.active{color:var(--jet-yellow);border-bottom-color:var(--jet-yellow)}
-.tab-view-container{flex:1;min-height:0;overflow-y:auto;padding:4px 8px}
-.player-row-item{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;font-size:11px;font-weight:bold;border-bottom:1px solid #12141c;color:#cbd5e1}
-.player-row-item.cashed-out{color:var(--jet-green);background:rgba(0,230,118,.08);border-radius:4px}
-.clean-win-banner{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ffcc00,#ffb300);color:#000;font-size:13px;font-weight:900;padding:8px 20px;border-radius:30px;box-shadow:0 6px 25px rgba(255,204,0,.6);z-index:9999;display:none;max-width:92%;text-align:center}
-.clean-win-banner.err{background:#ff3344;color:#fff;box-shadow:0 6px 25px rgba(255,51,68,.5)}
-@keyframes pulseCollect{0%{box-shadow:0 0 6px rgba(0,230,118,.4)}100%{box-shadow:0 0 16px rgba(0,230,118,.8)}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>JetX - Hulu Bet</title>
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --bg-surface: #141923;
+      --bg-surface-2: #1b2230;
+      --border-color: #263043;
+      --accent-yellow: #fcd535;
+      --accent-yellow-hover: #e5c12e;
+      --text-main: #f0f3f8;
+      --text-muted: #79869b;
+      --win-green: #2ecc71;
+      --loss-red: #e74c3c;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-dark);
+      position: relative;
+    }
+
+    /* Top Nav Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #0f131c;
+      border-bottom: 1px solid #1c2433;
+      height: 44px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .logo-jetx {
+      font-size: 1.35rem;
+      font-weight: 900;
+      font-style: italic;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-jetx span {
+      color: var(--accent-yellow);
+    }
+
+    .top-right-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .balance-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #171e2c;
+      padding: 4px 9px;
+      border-radius: 16px;
+      border: 1px solid #232d40;
+      cursor: pointer;
+    }
+
+    .balance-amount {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+    }
+
+    .balance-currency {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* History pills bar */
+    .history-bar {
+      display: flex;
+      align-items: center;
+      background: #0d1118;
+      padding: 4px 8px;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid #18202d;
+      min-height: 28px;
+    }
+    .history-bar::-webkit-scrollbar { display: none; }
+
+    .history-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #141b26;
+      white-space: nowrap;
+    }
+    .history-pill.low { color: var(--loss-red); }
+    .history-pill.med { color: var(--win-green); }
+    .history-pill.high { color: var(--accent-yellow); font-weight: 800; }
+
+    /* Canvas Arena */
+    .arena-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #000;
+      overflow: hidden;
+    }
+
+    canvas#jet-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .arena-overlay-mult {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: var(--win-green);
+      text-shadow: 0 0 18px rgba(46, 204, 113, 0.45);
+      pointer-events: none;
+      letter-spacing: -1px;
+    }
+
+    .arena-overlay-mult.crashed {
+      color: var(--loss-red);
+      text-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+    }
+
+    .receiving-badge {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .receiving-text {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+    }
+
+    .receiving-bar {
+      width: 120px;
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .receiving-progress {
+      width: 100%;
+      height: 100%;
+      background: var(--accent-yellow);
+      animation: progressSweep 3s linear infinite;
+    }
+
+    @keyframes progressSweep {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .spectator-count {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-yellow);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(0,0,0,0.55);
+      padding: 2px 6px;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+    .spectator-count svg {
+      width: 12px;
+      height: 12px;
+      fill: var(--accent-yellow);
+    }
+
+    /* Bet Panels (Dual Deck) */
+    .bet-panels-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+      background: #0d111a;
+      border-bottom: 1px solid #1a2231;
+    }
+
+    .bet-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 7px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .multiplier-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: #252f44;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #9cb0d1;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* Custom Switch */
+    .switch-track {
+      width: 28px;
+      height: 15px;
+      background: #2b364c;
+      border-radius: 9px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .switch-thumb {
+      width: 11px;
+      height: 11px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .switch-track.active {
+      background: var(--win-green);
+    }
+
+    .switch-track.active .switch-thumb {
+      transform: translateX(13px);
+    }
+
+    /* Control Rows (Stepper + Quick Chips + Action Button) */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .input-col {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .stepper-box {
+      display: flex;
+      align-items: center;
+      background: #192130;
+      border: 1px solid #28344b;
+      border-radius: 6px;
+      height: 34px;
+      overflow: hidden;
+    }
+
+    .stepper-btn {
+      width: 32px;
+      height: 100%;
+      background: #222c3e;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .stepper-btn:active { background: #2f3d55; }
+    .stepper-btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+    .stepper-val {
+      flex: 1;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fff;
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+
+    .chips-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .chip-btn {
+      background: #19202e;
+      border: 1px solid #242f44;
+      color: #93a2bd;
+      border-radius: 4px;
+      padding: 4px 0;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .chip-btn:active { background: #253147; color: #fff; }
+
+    /* Bet / Cashout Big Button */
+    .btn-action {
+      grid-column: span 1;
+      height: 100%;
+      min-height: 64px;
+      border-radius: 6px;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 900;
+      transition: all 0.15s ease;
+      padding: 4px 6px;
+    }
+
+    .btn-action.state-bet {
+      background: var(--accent-yellow);
+      color: #11141c;
+      box-shadow: 0 4px 0 #bfa020;
+    }
+    .btn-action.state-bet:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #bfa020;
+    }
+
+    .btn-action.state-collect {
+      background: var(--win-green);
+      color: #ffffff;
+      box-shadow: 0 4px 0 #1b8547;
+      animation: pulseWin 1s infinite alternate;
+    }
+    .btn-action.state-collect:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #1b8547;
+    }
+
+    .btn-action.state-waiting {
+      background: #2b3549;
+      color: #7b8ba6;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    @keyframes pulseWin {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.15); }
+    }
+
+    .btn-action-amount {
+      font-size: 0.95rem;
+      line-height: 1.1;
+    }
+
+    .btn-action-text {
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Live Feed / Stats Tabs */
+    .tabs-header {
+      display: flex;
+      background: #0f141f;
+      border-bottom: 1px solid #1a2231;
+    }
+
+    .tab-item {
+      flex: 1;
+      padding: 9px 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tab-item.active {
+      color: var(--accent-yellow);
+    }
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 2px;
+      background: var(--accent-yellow);
+      border-radius: 2px;
+    }
+
+    .feed-table-container {
+      flex: 1;
+      background: #0d111a;
+      overflow-y: auto;
+      max-height: 230px;
+    }
+
+    .feed-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+    }
+
+    .feed-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 1px solid #192131;
+      background: #0f1421;
+    }
+
+    .feed-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #141a27;
+      color: #b0bfd6;
+    }
+
+    .feed-table td.col-win {
+      color: var(--win-green);
+      font-weight: 700;
+      text-align: right;
+    }
+    .feed-table td.col-right {
+      text-align: right;
+    }
+
+    .user-tag-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .user-avatar-mini {
+      width: 16px;
+      height: 16px;
+      background: #253147;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-avatar-mini svg {
+      width: 10px;
+      height: 10px;
+      fill: #8194b5;
+    }
+
+    /* Toast Notification */
+    #toast-container {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+      width: 90%;
+      max-width: 360px;
+    }
+
+    .toast-box {
+      background: rgba(18, 24, 35, 0.95);
+      border-left: 4px solid var(--accent-yellow);
+      border-radius: 4px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 0.8rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.2s ease-out;
+    }
+    .toast-box.error { border-left-color: var(--loss-red); }
+    .toast-box.success { border-left-color: var(--win-green); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sound Consent Modal */
+    #sound-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 14, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #1b2333;
+      border: 1px solid #293750;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 340px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.7);
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #2b3850;
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal-btn:hover { background: #374665; }
+    .modal-btn svg { width: 16px; height: 16px; fill: currentColor; }
+  </style>
 </head>
 <body>
-<div class="jetx-wrapper">
-  <div class="clean-win-banner" id="cleanWinBanner"><span id="winBannerText"></span></div>
-  <div class="brand-top-bar">
-    <div class="jetx-logo">Jet<span>X</span></div>
-    <div class="jetx-bal-box"><span>💰</span><span id="userBalText">--</span> ETB</div>
-  </div>
-  <div class="history-ticker" id="historyTicker"></div>
-  <div class="flight-arena">
-    <canvas id="flightCanvas"></canvas>
-    <div class="multiplier-overlay"><div class="mult-text" id="liveMultiplierText" style="display:none">1.00 x</div></div>
-    <div class="receiving-bets-banner" id="receivingBanner">
-      <div style="font-size:36px;">✈️</div>
-      <div class="receiving-progress"><div class="receiving-fill" id="receivingProgressFill"></div></div>
-      <div class="receiving-text" id="receivingText">PLACE YOUR BET</div>
+  <div id="app">
+    <!-- Top Nav -->
+    <header class="top-bar">
+      <div class="brand-group">
+        <div class="logo-jetx">Jet<span>X</span></div>
+      </div>
+      <div class="top-right-group">
+        <div class="balance-pill" id="balance-pill" title="Click to deposit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fcd535">
+            <circle cx="12" cy="12" r="10" stroke="#fcd535" stroke-width="2" fill="none"/>
+            <path d="M12 6v12M15 9.5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5H8" stroke="#fcd535" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="balance-amount" id="balance-display">0.00</span>
+          <span class="balance-currency">ETB</span>
+        </div>
+        <button class="icon-btn" id="btn-sound-toggle" aria-label="Toggle Sound">
+          <svg id="sound-icon-svg" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Recent Multipliers History -->
+    <div class="history-bar" id="history-bar">
+      <span class="history-pill low">1.14x</span>
+      <span class="history-pill low">1.17x</span>
+      <span class="history-pill med">5.69x</span>
+      <span class="history-pill med">2.81x</span>
+      <span class="history-pill low">1.00x</span>
+      <span class="history-pill low">1.24x</span>
+      <span class="history-pill high">101.97x</span>
     </div>
-  </div>
-  <div class="bet-panels-wrapper" id="panels"></div>
-  <div class="live-players-section">
-    <div class="bottom-tabs-bar">
-      <div class="b-tab-item active" onclick="switchBottomTab('players',this)">Big Wins</div>
-      <div class="b-tab-item" onclick="switchBottomTab('mybets',this)">My Bets</div>
+
+    <!-- Canvas Animation Arena -->
+    <div class="arena-container" id="arena-container">
+      <canvas id="jet-canvas"></canvas>
+      <div class="arena-overlay-mult" id="mult-display">1.00 x</div>
+      <div class="receiving-badge" id="receiving-badge">
+        <span class="receiving-text">RECEIVING BETS</span>
+        <div class="receiving-bar"><div class="receiving-progress"></div></div>
+      </div>
+      <div class="spectator-count">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <span id="players-online-count">12</span>
+      </div>
     </div>
-    <div class="tab-view-container">
-      <div id="tabViewPlayers"></div>
-      <div id="tabViewMyBets" style="display:none;"></div>
+
+    <!-- Dual Bet Panels -->
+    <div class="bet-panels-container">
+      <!-- Panel 1 -->
+      <div class="bet-panel" id="panel-0">
+        <div class="panel-header-row">
+          <span class="multiplier-tag">X2</span>
+          <div class="toggle-group">
+            <div class="toggle-label" onclick="toggleAutoBet(0)">
+              <span>AUTO BET</span>
+              <div class="switch-track" id="autobet-track-0"><div class="switch-thumb"></div></div>
+            </div>
+            <div class="toggle-label" onclick="toggleAutoCollect(0)">
+              <span>AUTO COLLECT</span>
+              <div class="switch-track" id="autocollect-track-0"><div class="switch-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-grid">
+          <div class="input-col">
+            <div class="stepper-box">
+              <button class="stepper-btn" onclick="adjustBet(0, -1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+              </button>
+              <input type="number" class="stepper-val" id="bet-input-0" value="2.00" min="1" max="1000" step="1"/>
+              <button class="stepper-btn" onclick="adjustBet(0, 1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
+            </div>
+            <div class="chips-row">
+              <button class="chip-btn" onclick="setBetAmount(0, 20)">20.00</button>
+              <button class="chip-btn" onclick="setBetAmount(0, 50)">50.00</button>
+              <button class="chip-btn" onclick="setBetAmount(0, 100)">100.00</button>
+              <button class="chip-btn" onclick="setBetAll(0)">ALL</button>
+            </div>
+          </div>
+
+          <div class="input-col">
+            <div class="stepper-box">
+              <button class="stepper-btn" onclick="adjustCollect(0, -0.1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+              </button>
+              <input type="number" class="stepper-val" id="collect-input-0" value="2.00" min="1.01" step="0.1"/>
+              <button class="stepper-btn" onclick="adjustCollect(0, 0.1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
+            </div>
+            <button class="btn-action state-bet" id="action-btn-0" onclick="handleActionClick(0)">
+              <span class="btn-action-amount" id="btn-amount-0">2.00 ETB</span>
+              <span class="btn-action-text" id="btn-label-0">BET</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2 -->
+      <div class="bet-panel" id="panel-1">
+        <div class="panel-header-row">
+          <span class="multiplier-tag">X2</span>
+          <div class="toggle-group">
+            <div class="toggle-label" onclick="toggleAutoBet(1)">
+              <span>AUTO BET</span>
+              <div class="switch-track" id="autobet-track-1"><div class="switch-thumb"></div></div>
+            </div>
+            <div class="toggle-label" onclick="toggleAutoCollect(1)">
+              <span>AUTO COLLECT</span>
+              <div class="switch-track" id="autocollect-track-1"><div class="switch-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-grid">
+          <div class="input-col">
+            <div class="stepper-box">
+              <button class="stepper-btn" onclick="adjustBet(1, -1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+              </button>
+              <input type="number" class="stepper-val" id="bet-input-1" value="2.00" min="1" max="1000" step="1"/>
+              <button class="stepper-btn" onclick="adjustBet(1, 1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
+            </div>
+            <div class="chips-row">
+              <button class="chip-btn" onclick="setBetAmount(1, 20)">20.00</button>
+              <button class="chip-btn" onclick="setBetAmount(1, 50)">50.00</button>
+              <button class="chip-btn" onclick="setBetAmount(1, 100)">100.00</button>
+              <button class="chip-btn" onclick="setBetAll(1)">ALL</button>
+            </div>
+          </div>
+
+          <div class="input-col">
+            <div class="stepper-box">
+              <button class="stepper-btn" onclick="adjustCollect(1, -0.1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+              </button>
+              <input type="number" class="stepper-val" id="collect-input-1" value="2.00" min="1.01" step="0.1"/>
+              <button class="stepper-btn" onclick="adjustCollect(1, 0.1)">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              </button>
+            </div>
+            <button class="btn-action state-bet" id="action-btn-1" onclick="handleActionClick(1)">
+              <span class="btn-action-amount" id="btn-amount-1">2.00 ETB</span>
+              <span class="btn-action-text" id="btn-label-1">BET</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Live Info Tabs -->
+    <div class="tabs-header">
+      <div class="tab-item active" onclick="switchTab('players')">Players</div>
+      <div class="tab-item" onclick="switchTab('history')">History</div>
+      <div class="tab-item" onclick="switchTab('mybets')">My Bets</div>
+      <div class="tab-item" onclick="switchTab('stats')">Statistics</div>
+    </div>
+
+    <div class="feed-table-container">
+      <table class="feed-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Bet</th>
+            <th>Collect</th>
+            <th style="text-align:right">Win</th>
+          </tr>
+        </thead>
+        <tbody id="live-table-body">
+          <!-- Populated from server feed -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sound Consent Dialog Modal -->
+    <div id="sound-modal">
+      <div class="modal-card">
+        <div class="modal-title">Would you like sound?</div>
+        <div class="modal-actions">
+          <button class="modal-btn" onclick="confirmSound(true)">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            Yes
+          </button>
+          <button class="modal-btn" onclick="confirmSound(false)">
+            <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast stack -->
+    <div id="toast-container"></div>
   </div>
-</div>
 
-<script>
-// ============================================================================
-// JET-X client. The SERVER decides the crash point and validates every cash-out.
-// The client only animates using the same growth formula and asks the server.
-// ============================================================================
-const API = "https://hulubet-server.onrender.com";
-let INIT_DATA = "", serverBalance = 0, reserved = 0, ready = false;
-let G = { a: 0.065, b: 0.035, c: 1.48 };
-const mult = t => Math.floor((1 + G.a * t + G.b * Math.pow(t, G.c)) * 100) / 100;
+  <script>
+    /* -------------------------------------------------------------
+       1. MANDATORY BOILERPLATE (Exact Hulu Bet Spec)
+    ------------------------------------------------------------- */
+    const API = "https://hulubet-server.onrender.com";
+    let INIT_DATA = "", serverBalance = 0, ready = false;
 
-async function api(path, opts = {}) {
-  try {
-    const r = await fetch(API + path, { ...opts, headers: { 'Content-Type': 'application/json', 'x-telegram-init-data': INIT_DATA } });
-    return await r.json();
-  } catch (e) { return { success: false, message: 'Connection problem' }; }
-}
-function postParent(msg) { try { if (window.parent && window.parent !== window) window.parent.postMessage(msg, '*'); } catch (e) {} }
-function banner(msg, err) {
-  const b = document.getElementById('cleanWinBanner');
-  document.getElementById('winBannerText').innerText = msg;
-  b.className = 'clean-win-banner' + (err ? ' err' : ''); b.style.display = 'block';
-  clearTimeout(banner.t); banner.t = setTimeout(() => b.style.display = 'none', 3000);
-}
-function syncBalance() {
-  document.getElementById('userBalText').innerText = Math.max(0, serverBalance - reserved).toFixed(2);
-  postParent({ type: 'BALANCE_UPDATE', newBalance: serverBalance });
-}
-async function refreshBalance() {
-  const d = await api('/api/user/init');
-  if (d.success) { serverBalance = d.balance; syncBalance(); }
-}
-
-// ---- audio ----
-let audioCtx = null;
-function playTone(f, type, dur) {
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-    g.gain.setValueAtTime(0.06, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + dur);
-  } catch (e) {}
-}
-const SOUNDS = { collect() { playTone(900, 'triangle', .1); setTimeout(() => playTone(1300, 'triangle', .2), 70); }, crash() { playTone(130, 'sawtooth', .35); }, click() { playTone(600, 'sine', .03); } };
-
-// ---- state ----
-let gameState = 'RECEIVING', currentMultiplier = 1, flightStart = 0, knownCp = null, raf = null, pollTimer = null, polling = false, parachutes = [];
-const bets = { 1: { state: 'IDLE', amount: 4, autoOn: true, target: 2, betId: null, busy: false }, 2: { state: 'IDLE', amount: 4, autoOn: true, target: 2, betId: null, busy: false } };
-let myLog = [];
-
-// ---- build the two bet panels ----
-document.getElementById('panels').innerHTML = [1, 2].map(id => `
-<div class="jet-panel"><div class="panel-grid-content">
-  <div class="panel-left-col">
-    <div class="stepper-row"><button class="step-btn" onclick="stepBetAmt(${id},-1)">—</button>
-      <input type="number" id="betInput${id}" class="bet-input-box" value="4.00" min="1" step="1" oninput="if(bets[${id}].state==='IDLE')updatePanelButtonUI(${id})">
-      <button class="step-btn" onclick="stepBetAmt(${id},1)">+</button></div>
-    <div class="quick-chips-row">${[4, 10, 20, 50].map(v => `<div class="quick-chip-btn" onclick="setBetAmt(${id},${v})">${v}</div>`).join('')}</div>
-  </div>
-  <div class="panel-left-col" style="flex:.75;">
-    <div class="auto-label on" id="autoLabel${id}" onclick="toggleAuto(${id})">AUTO COLLECT</div>
-    <div class="auto-collect-box"><button class="step-btn" onclick="stepCollectTarget(${id},-0.1)">—</button>
-      <input type="text" id="targetMultInput${id}" class="collect-target-val" value="2.00x">
-      <button class="step-btn" onclick="stepCollectTarget(${id},0.1)">+</button></div>
-  </div>
-  <button class="jet-main-bet-btn" id="actionBtn${id}" onclick="handleJetBet(${id})">
-    <div class="btn-amt-label" id="btnAmtLabel${id}">4.00 ETB</div><div class="btn-action-label" id="btnActionLabel${id}">BET</div>
-  </button>
-</div></div>`).join('');
-
-// ---- session handshake with the lobby ----
-window.addEventListener('message', e => {
-  if (e.source !== window.parent) return;
-  const d = e.data || {};
-  if (d.type === 'INIT' && d.initData) { INIT_DATA = d.initData; ready = true; refreshBalance(); loadFeed(); }
-  if (d.type === 'UPDATE_BALANCE') refreshBalance();
-});
-postParent({ type: 'GAME_READY' });
-setTimeout(() => { if (!ready) banner('Open this game from the Hulu Bet app in Telegram', true); }, 4000);
-
-// ---- canvas ----
-const canvas = document.getElementById('flightCanvas'), ctx = canvas.getContext('2d');
-function resizeCanvas() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
-window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
-function drawFlightArena(m) {
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-  const sky = ctx.createLinearGradient(0, 0, 0, h);
-  if (m < 2) { sky.addColorStop(0, '#3a568c'); sky.addColorStop(1, '#8fa6cc'); }
-  else if (m < 8) { sky.addColorStop(0, '#121b2d'); sky.addColorStop(1, '#2a3b5c'); }
-  else { sky.addColorStop(0, '#050608'); sky.addColorStop(1, '#0d111a'); }
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
-  if (gameState === 'FLYING') {
-    const p = Math.min(1, (m - 1) / 4);
-    drawJet(30 + (w - 110) * Math.pow(p, .75), (h - 40) - (h - 90) * Math.pow(p, .85));
-    drawParachutes(h);
-  }
-}
-function drawJet(x, y) {
-  ctx.save(); ctx.translate(x, y); ctx.rotate(-.32);
-  ctx.fillStyle = '#ff6600'; ctx.beginPath(); ctx.moveTo(-24, 0); ctx.lineTo(-38 - Math.random() * 8, -3); ctx.lineTo(-30, 0); ctx.lineTo(-38 - Math.random() * 8, 3); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#ffcc00'; ctx.beginPath(); ctx.moveTo(22, 0); ctx.lineTo(-18, -6); ctx.lineTo(-24, 0); ctx.lineTo(-18, 6); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#333d4d'; ctx.beginPath(); ctx.moveTo(-4, -14); ctx.lineTo(6, -2); ctx.lineTo(-12, -2); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-24, -10); ctx.lineTo(-20, 0); ctx.closePath(); ctx.fill();
-  ctx.restore();
-}
-function drawParachutes(h) {
-  parachutes = parachutes.filter(p => p.y <= h);
-  parachutes.forEach(p => { p.y += .8; ctx.save(); ctx.translate(p.x, p.y); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 8, Math.PI, 0); ctx.fill(); ctx.fillStyle = '#ffcc00'; ctx.fillRect(-2, 10, 4, 6); ctx.restore(); });
-}
-
-// ---- round flow ----
-function startReceivingBetsPhase() {
-  cancelAnimationFrame(raf); gameState = 'RECEIVING';
-  document.getElementById('receivingBanner').style.display = 'flex';
-  document.getElementById('liveMultiplierText').style.display = 'none';
-  const fill = document.getElementById('receivingProgressFill'); let w = 0;
-  const t = setInterval(() => {
-    w += 2.5; fill.style.width = Math.min(100, w) + '%';
-    if (w >= 100) { clearInterval(t); document.getElementById('receivingBanner').style.display = 'none'; launchJetFlight(); }
-  }, 100);
-}
-
-async function launchJetFlight() {
-  const queued = [1, 2].filter(id => bets[id].state === 'QUEUED');
-  if (!queued.length) { startReceivingBetsPhase(); return; }   // nobody is betting: no fake rounds
-  gameState = 'LAUNCHING';
-  const total = queued.reduce((s, id) => s + bets[id].amount, 0);
-  const d = await api('/api/crash/bet', { method: 'POST', body: JSON.stringify({ gameName: 'JetX', bets: queued.map(id => ({ amount: bets[id].amount, auto: bets[id].autoOn ? bets[id].target : null })) }) });
-  reserved = Math.max(0, reserved - total);
-  if (!d.success) {
-    queued.forEach(id => { bets[id].state = 'IDLE'; updatePanelButtonUI(id); });
-    banner(d.message || 'Bet failed', true); refreshBalance(); syncBalance(); startReceivingBetsPhase(); return;
-  }
-  if (d.growth) G = d.growth;
-  serverBalance = d.newBalance; syncBalance();
-  queued.forEach((id, i) => { bets[id].state = 'IN_FLIGHT'; bets[id].betId = d.betIds[i]; updatePanelButtonUI(id); });
-  knownCp = null; parachutes = []; flightStart = performance.now(); gameState = 'FLYING';
-  const mt = document.getElementById('liveMultiplierText'); mt.style.display = 'block'; mt.className = 'mult-text';
-  postParent({ type: 'BET_STARTED' });
-  clearInterval(pollTimer); pollTimer = setInterval(pollBets, 250);
-  runFlightLoop();
-}
-
-function runFlightLoop() {
-  if (gameState !== 'FLYING') return;
-  currentMultiplier = mult((performance.now() - flightStart) / 1000);
-  if (knownCp !== null && currentMultiplier >= knownCp) { triggerJetCrash(knownCp); return; }
-  document.getElementById('liveMultiplierText').innerText = currentMultiplier.toFixed(2) + ' x';
-  [1, 2].forEach(id => {
-    if (bets[id].state === 'IN_FLIGHT') {
-      document.getElementById('btnAmtLabel' + id).innerText = (bets[id].amount * currentMultiplier).toFixed(2) + ' ETB';
-      document.getElementById('btnActionLabel' + id).innerText = 'COLLECT';
-    }
-  });
-  drawFlightArena(currentMultiplier);
-  raf = requestAnimationFrame(runFlightLoop);
-}
-
-async function pollBets() {
-  if (polling || gameState !== 'FLYING') return;
-  polling = true;
-  try {
-    for (const id of [1, 2]) {
-      const b = bets[id]; if (b.state !== 'IN_FLIGHT' || b.busy) continue;
-      const d = await api('/api/crash/status?betId=' + encodeURIComponent(b.betId));
-      if (d.success && d.state !== 'FLYING') await applyResult(id, d);
-      if (gameState !== 'FLYING') break;
-    }
-  } finally { polling = false; }
-}
-
-async function applyResult(id, d, skipCrash) {
-  const b = bets[id]; if (b.state !== 'IN_FLIGHT') return;
-  b.state = 'IDLE'; const amt = b.amount; b.betId = null;
-  serverBalance = d.newBalance; syncBalance();
-  if (d.state === 'WON') {
-    SOUNDS.collect(); parachutes.push({ x: 30 + Math.random() * (canvas.width - 80), y: 30 + Math.random() * 40 });
-    myLog.unshift({ bet: amt, mult: d.multiplier, win: d.payout, status: 'WON' });
-    banner(`🎉 +${d.payout.toFixed(2)} ETB @ ${d.multiplier.toFixed(2)}x`);
-  } else myLog.unshift({ bet: amt, mult: 0, win: 0, status: 'LOST' });
-  if (d.crashPoint !== undefined) knownCp = d.crashPoint;
-  updatePanelButtonUI(id);
-  if (d.state === 'CRASHED' && !skipCrash) {
-    for (const o of [1, 2]) {   // the server already settled the other panel; fetch its result
-      if (o !== id && bets[o].state === 'IN_FLIGHT') {
-        const r = await api('/api/crash/status?betId=' + encodeURIComponent(bets[o].betId));
-        if (r.success && r.state !== 'FLYING') await applyResult(o, r, true);
+    async function api(path, opts = {}) {
+      try {
+        const r = await fetch(API + path, {
+          ...opts,
+          headers: {
+            'Content-Type': 'application/json',
+            'x-telegram-init-data': INIT_DATA
+          }
+        });
+        return await r.json();
+      } catch (e) {
+        return { success: false, message: 'Connection problem' };
       }
     }
-    triggerJetCrash(knownCp !== null ? knownCp : currentMultiplier);
-  }
-}
 
-async function collect(id) {
-  const b = bets[id]; if (b.state !== 'IN_FLIGHT' || b.busy) return;
-  b.busy = true;
-  const d = await api('/api/crash/cashout', { method: 'POST', body: JSON.stringify({ betId: b.betId, clientMult: currentMultiplier }) });
-  b.busy = false;
-  if (!d.success) { banner(d.message || 'Cash-out failed', true); return; }
-  await applyResult(id, d);
-}
+    const postParent = m => {
+      try { parent.postMessage(m, '*'); } catch (e) {}
+    };
 
-function triggerJetCrash(cp) {
-  if (gameState !== 'FLYING') return;
-  gameState = 'CRASHED'; cancelAnimationFrame(raf); clearInterval(pollTimer);
-  SOUNDS.crash();
-  [1, 2].forEach(id => { if (bets[id].state === 'IN_FLIGHT') { bets[id].state = 'IDLE'; bets[id].betId = null; updatePanelButtonUI(id); } });
-  const mt = document.getElementById('liveMultiplierText'); mt.className = 'mult-text crashed'; mt.innerText = Number(cp).toFixed(2) + ' x';
-  drawFlightArena(cp);
-  postParent({ type: 'BET_ENDED' });
-  refreshBalance(); loadFeed();
-  setTimeout(startReceivingBetsPhase, 2800);
-}
+    addEventListener('message', e => {
+      if (e.source !== parent) return;
+      const d = e.data || {};
+      if (d.type === 'INIT' && d.initData) {
+        INIT_DATA = d.initData;
+        ready = true;
+        refreshBalance();
+        loadPublicFeed();
+      }
+      if (d.type === 'UPDATE_BALANCE') refreshBalance();
+    });
 
-// ---- panel actions ----
-function handleJetBet(id) {
-  const b = bets[id];
-  if (b.state === 'IDLE') {
-    if (!ready) return banner('Loading session… open from the Hulu Bet app', true);
-    const amt = Number(document.getElementById('betInput' + id).value);
-    if (!(amt >= 1 && amt <= 1000)) return banner('Bet must be 1 – 1000 ETB', true);
-    if (amt > serverBalance - reserved) { postParent({ type: 'OPEN_DEPOSIT' }); return banner('Insufficient balance', true); }
-    const t = parseFloat(document.getElementById('targetMultInput' + id).value);
-    b.target = t >= 1.01 ? t : 2; b.amount = amt; reserved += amt; b.state = 'QUEUED';
-    syncBalance(); SOUNDS.click();
-  } else if (b.state === 'QUEUED') {
-    reserved = Math.max(0, reserved - b.amount); b.state = 'IDLE'; syncBalance(); SOUNDS.click();
-  } else if (b.state === 'IN_FLIGHT') collect(id);
-  updatePanelButtonUI(id);
-}
-function updatePanelButtonUI(id) {
-  const b = bets[id], btn = document.getElementById('actionBtn' + id);
-  const amtL = document.getElementById('btnAmtLabel' + id), actL = document.getElementById('btnActionLabel' + id);
-  btn.className = 'jet-main-bet-btn';
-  if (b.state === 'IDLE') { amtL.innerText = (Number(document.getElementById('betInput' + id).value) || 0).toFixed(2) + ' ETB'; actL.innerText = 'BET'; }
-  else if (b.state === 'QUEUED') { btn.classList.add('state-cancel'); amtL.innerText = b.amount.toFixed(2) + ' ETB'; actL.innerText = 'CANCEL'; }
-  else btn.classList.add('state-collect');
-}
-function stepBetAmt(id, v) { SOUNDS.click(); const el = document.getElementById('betInput' + id); el.value = Math.max(1, Number(el.value) + v).toFixed(2); if (bets[id].state === 'IDLE') updatePanelButtonUI(id); }
-function setBetAmt(id, v) { SOUNDS.click(); document.getElementById('betInput' + id).value = Number(v).toFixed(2); if (bets[id].state === 'IDLE') updatePanelButtonUI(id); }
-function stepCollectTarget(id, v) { const el = document.getElementById('targetMultInput' + id); el.value = Math.max(1.1, (parseFloat(el.value) || 2) + v).toFixed(2) + 'x'; }
-function toggleAuto(id) { bets[id].autoOn = !bets[id].autoOn; document.getElementById('autoLabel' + id).className = 'auto-label' + (bets[id].autoOn ? ' on' : ''); }
+    postParent({ type: 'GAME_READY' });
 
-// ---- real data feeds (recent big wins + real crash history from the server) ----
-async function loadFeed() {
-  try {
-    const d = await (await fetch(API + '/api/public/feed?game=JetX')).json();
-    if (!d.success) return;
-    document.getElementById('historyTicker').innerHTML = d.crashes.map(c => `<span class="mult-chip ${c >= 2 ? 'chip-green' : c >= 1.5 ? 'chip-yellow' : 'chip-red'}">${Number(c).toFixed(2)}x</span>`).join('');
-    document.getElementById('tabViewPlayers').innerHTML = d.wins.length ? d.wins.map(w => `<div class="player-row-item"><span>👤 ${w.user}</span><span>${w.game}</span><span style="color:var(--jet-green)">+${w.win.toFixed(2)} ETB</span></div>`).join('')
-      : '<div style="text-align:center;color:var(--text-gray);font-size:11px;padding:20px;">No big wins yet</div>';
-  } catch (e) {}
-}
-function switchBottomTab(k, el) {
-  document.querySelectorAll('.b-tab-item').forEach(t => t.classList.remove('active')); el.classList.add('active');
-  document.getElementById('tabViewPlayers').style.display = k === 'players' ? 'block' : 'none';
-  const mb = document.getElementById('tabViewMyBets'); mb.style.display = k === 'players' ? 'none' : 'block';
-  if (k !== 'players') mb.innerHTML = myLog.length ? myLog.map(b => `<div class="player-row-item ${b.status === 'WON' ? 'cashed-out' : ''}"><span>Bet: ${b.bet.toFixed(2)} ETB</span><span>${b.mult > 0 ? b.mult.toFixed(2) + 'x' : 'Crashed'}</span><span>${b.status === 'WON' ? '+' + b.win.toFixed(2) + ' ETB' : '0.00'}</span></div>`).join('') : '<div style="text-align:center;color:var(--text-gray);font-size:11px;padding:20px;">No bets yet</div>';
-}
+    async function refreshBalance() {
+      const d = await api('/api/user/init');
+      if (d.success) {
+        serverBalance = d.balance;
+        showBalance();
+      }
+    }
 
-[1, 2].forEach(updatePanelButtonUI);
-startReceivingBetsPhase();
-</script>
+    function showBalance() {
+      const el = document.getElementById('balance-display');
+      if (el) el.innerText = Number(serverBalance).toFixed(2);
+      postParent({ type: 'BALANCE_UPDATE', newBalance: serverBalance });
+    }
+
+    /* -------------------------------------------------------------
+       2. Web Audio Synthesizer (Zero External Dependencies)
+    ------------------------------------------------------------- */
+    let audioCtx = null;
+    let soundEnabled = false;
+    let jetHumOsc = null;
+    let jetHumGain = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playJetEngine(freq = 90) {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        if (!jetHumOsc) {
+          jetHumOsc = audioCtx.createOscillator();
+          jetHumGain = audioCtx.createGain();
+          jetHumOsc.type = 'sawtooth';
+          jetHumOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          // Low pass filter to make it sound like a deep turbojet
+          const filter = audioCtx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(260, audioCtx.currentTime);
+
+          jetHumGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          jetHumOsc.connect(filter);
+          filter.connect(jetHumGain);
+          jetHumGain.connect(audioCtx.destination);
+          jetHumOsc.start();
+        } else {
+          jetHumOsc.frequency.setTargetAtTime(Math.min(freq, 400), audioCtx.currentTime, 0.1);
+        }
+      } catch (e) {}
+    }
+
+    function stopJetEngine() {
+      if (jetHumOsc) {
+        try {
+          jetHumGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+          setTimeout(() => {
+            if (jetHumOsc) {
+              jetHumOsc.stop();
+              jetHumOsc.disconnect();
+              jetHumOsc = null;
+            }
+          }, 80);
+        } catch (e) {
+          jetHumOsc = null;
+        }
+      }
+    }
+
+    function playCashoutSound() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // A5
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    function playCrashSound() {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        // White noise explosion burst
+        const bufferSize = audioCtx.sampleRate * 0.4;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(400, audioCtx.currentTime);
+        filter.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.4);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start();
+      } catch (e) {}
+    }
+
+    function confirmSound(enable) {
+      soundEnabled = enable;
+      if (enable) initAudio();
+      document.getElementById('sound-modal').style.display = 'none';
+      updateSoundIcon();
+    }
+
+    document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) initAudio();
+      updateSoundIcon();
+    });
+
+    function updateSoundIcon() {
+      const svg = document.getElementById('sound-icon-svg');
+      if (soundEnabled) {
+        svg.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+      } else {
+        svg.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+      }
+    }
+
+    /* -------------------------------------------------------------
+       3. Crash Game State & Logic (Authoritative Server Spec)
+    ------------------------------------------------------------- */
+    let growthParams = { a: 0.065, b: 0.035, c: 1.48 };
+    const multCurve = t => Math.floor((1 + growthParams.a * t + growthParams.b * Math.pow(t, growthParams.c)) * 100) / 100;
+
+    const STATE = {
+      IDLE: 'IDLE',
+      WAITING: 'WAITING',
+      FLYING: 'FLYING',
+      CRASHED: 'CRASHED'
+    };
+
+    let gameState = STATE.WAITING;
+    let roundFlightStart = 0;
+    let currentMultiplier = 1.00;
+    let pollInterval = null;
+    let openRoundId = null;
+
+    // Dual Bet panel representations
+    const panels = [
+      {
+        id: 0,
+        betInput: 2.00,
+        autoBet: false,
+        autoCollect: false,
+        collectAt: 2.00,
+        activeBetId: null,
+        queued: false,
+        cashedOut: false,
+        inFlight: false
+      },
+      {
+        id: 1,
+        betInput: 2.00,
+        autoBet: false,
+        autoCollect: false,
+        collectAt: 2.00,
+        activeBetId: null,
+        queued: false,
+        cashedOut: false,
+        inFlight: false
+      }
+    ];
+
+    function toast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const box = document.createElement('div');
+      box.className = `toast-box ${type}`;
+      box.innerText = message;
+      container.appendChild(box);
+      setTimeout(() => {
+        box.style.opacity = '0';
+        box.style.transform = 'translateY(-8px)';
+        box.style.transition = 'all 0.2s';
+        setTimeout(() => box.remove(), 250);
+      }, 3500);
+    }
+
+    document.getElementById('balance-pill').addEventListener('click', () => {
+      postParent({ type: 'OPEN_DEPOSIT' });
+    });
+
+    /* -------------------------------------------------------------
+       4. UI Adjusters (Bet Amount, Steppers, Toggles)
+    ------------------------------------------------------------- */
+    function adjustBet(idx, delta) {
+      if (panels[idx].inFlight || panels[idx].activeBetId) return;
+      let val = Math.round((panels[idx].betInput + delta) * 100) / 100;
+      val = Math.max(1, Math.min(1000, val));
+      panels[idx].betInput = val;
+      document.getElementById(`bet-input-${idx}`).value = val.toFixed(2);
+      updatePanelActionBtn(idx);
+    }
+
+    document.querySelectorAll('.stepper-val').forEach(input => {
+      input.addEventListener('change', e => {
+        const id = e.target.id;
+        const idx = id.includes('0') ? 0 : 1;
+        let v = parseFloat(e.target.value) || 1;
+        if (id.startsWith('bet')) {
+          v = Math.max(1, Math.min(1000, Math.floor(v)));
+          panels[idx].betInput = v;
+          e.target.value = v.toFixed(2);
+          updatePanelActionBtn(idx);
+        } else {
+          v = Math.max(1.01, Math.round(v * 100) / 100);
+          panels[idx].collectAt = v;
+          e.target.value = v.toFixed(2);
+        }
+      });
+    });
+
+    function setBetAmount(idx, amt) {
+      if (panels[idx].inFlight || panels[idx].activeBetId) return;
+      panels[idx].betInput = Math.min(1000, amt);
+      document.getElementById(`bet-input-${idx}`).value = panels[idx].betInput.toFixed(2);
+      updatePanelActionBtn(idx);
+    }
+
+    function setBetAll(idx) {
+      if (panels[idx].inFlight || panels[idx].activeBetId) return;
+      let maxAfford = Math.min(1000, Math.floor(serverBalance));
+      panels[idx].betInput = Math.max(1, maxAfford);
+      document.getElementById(`bet-input-${idx}`).value = panels[idx].betInput.toFixed(2);
+      updatePanelActionBtn(idx);
+    }
+
+    function adjustCollect(idx, delta) {
+      let val = Math.round((panels[idx].collectAt + delta) * 100) / 100;
+      val = Math.max(1.01, val);
+      panels[idx].collectAt = val;
+      document.getElementById(`collect-input-${idx}`).value = val.toFixed(2);
+    }
+
+    function toggleAutoBet(idx) {
+      panels[idx].autoBet = !panels[idx].autoBet;
+      document.getElementById(`autobet-track-${idx}`).classList.toggle('active', panels[idx].autoBet);
+    }
+
+    function toggleAutoCollect(idx) {
+      panels[idx].autoCollect = !panels[idx].autoCollect;
+      document.getElementById(`autocollect-track-${idx}`).classList.toggle('active', panels[idx].autoCollect);
+    }
+
+    function updatePanelActionBtn(idx) {
+      const p = panels[idx];
+      const btn = document.getElementById(`action-btn-${idx}`);
+      const amtLabel = document.getElementById(`btn-amount-${idx}`);
+      const txtLabel = document.getElementById(`btn-label-${idx}`);
+
+      if (p.activeBetId && !p.cashedOut && gameState === STATE.FLYING) {
+        btn.className = 'btn-action state-collect';
+        amtLabel.innerText = `${(p.betInput * currentMultiplier).toFixed(2)} ETB`;
+        txtLabel.innerText = 'COLLECT';
+        btn.disabled = false;
+      } else if (p.queued) {
+        btn.className = 'btn-action state-waiting';
+        amtLabel.innerText = `${p.betInput.toFixed(2)} ETB`;
+        txtLabel.innerText = 'CANCEL';
+        btn.disabled = false;
+      } else if (gameState === STATE.FLYING && p.cashedOut) {
+        btn.className = 'btn-action state-waiting';
+        amtLabel.innerText = 'WAITING';
+        txtLabel.innerText = 'NEXT ROUND';
+        btn.disabled = true;
+      } else {
+        btn.className = 'btn-action state-bet';
+        amtLabel.innerText = `${p.betInput.toFixed(2)} ETB`;
+        txtLabel.innerText = 'BET';
+        btn.disabled = p.inFlight;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       5. Action Button Handlers & Crash Network Cycle
+    ------------------------------------------------------------- */
+    function handleActionClick(idx) {
+      const p = panels[idx];
+      if (p.inFlight) return;
+
+      // 1. If currently flying with an active bet -> CASH OUT
+      if (gameState === STATE.FLYING && p.activeBetId && !p.cashedOut) {
+        executeCashout(idx);
+        return;
+      }
+
+      // 2. If queued -> Cancel Queue
+      if (p.queued) {
+        p.queued = false;
+        updatePanelActionBtn(idx);
+        return;
+      }
+
+      // 3. Queue Bet
+      if (p.betInput > serverBalance) {
+        toast("Insufficient balance", "error");
+        postParent({ type: 'OPEN_DEPOSIT' });
+        return;
+      }
+
+      p.queued = true;
+      updatePanelActionBtn(idx);
+
+      // If we are currently idling in waiting phase, trigger round start immediately
+      if (gameState === STATE.WAITING || gameState === STATE.IDLE) {
+        launchRoundIfQueued();
+      }
+    }
+
+    async function launchRoundIfQueued() {
+      const betsToPlace = [];
+      const panelIndices = [];
+
+      for (let i = 0; i < panels.length; i++) {
+        if (panels[i].queued || panels[i].autoBet) {
+          if (panels[i].betInput <= serverBalance) {
+            betsToPlace.push({
+              amount: panels[i].betInput,
+              auto: panels[i].autoCollect ? panels[i].collectAt : null
+            });
+            panelIndices.push(i);
+            panels[i].inFlight = true;
+            updatePanelActionBtn(i);
+          } else {
+            panels[i].queued = false;
+            toast(`Panel ${i+1}: Insufficient balance`, 'error');
+            updatePanelActionBtn(i);
+          }
+        }
+      }
+
+      if (betsToPlace.length === 0) return;
+
+      postParent({ type: 'BET_STARTED' });
+
+      // Call Server Authoritative crash bet endpoint
+      const res = await api('/api/crash/bet', {
+        method: 'POST',
+        body: JSON.stringify({
+          gameName: "JetX",
+          bets: betsToPlace
+        })
+      });
+
+      if (!res.success) {
+        panelIndices.forEach(idx => {
+          panels[idx].inFlight = false;
+          panels[idx].queued = false;
+          updatePanelActionBtn(idx);
+        });
+        toast(res.message || "Could not place bet", "error");
+        postParent({ type: 'BET_ENDED' });
+        return;
+      }
+
+      // Success
+      if (res.newBalance !== undefined) {
+        serverBalance = res.newBalance;
+        showBalance();
+      }
+
+      if (res.growth) {
+        growthParams = res.growth;
+      }
+
+      openRoundId = res.roundId;
+
+      panelIndices.forEach((panelIdx, i) => {
+        panels[panelIdx].activeBetId = res.betIds[i];
+        panels[panelIdx].cashedOut = false;
+        panels[panelIdx].inFlight = false;
+        panels[panelIdx].queued = false;
+      });
+
+      startFlightAnimation();
+    }
+
+    function startFlightAnimation() {
+      gameState = STATE.FLYING;
+      roundFlightStart = performance.now();
+      currentMultiplier = 1.00;
+      document.getElementById('receiving-badge').style.display = 'none';
+      document.getElementById('mult-display').className = 'arena-overlay-mult';
+
+      // Start engine sound
+      playJetEngine(100);
+
+      // Start status polling every 250ms for open bets
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(pollRoundStatus, 250);
+
+      // Update both panels' action buttons to Collect
+      panels.forEach((_, idx) => updatePanelActionBtn(idx));
+    }
+
+    async function executeCashout(idx) {
+      const p = panels[idx];
+      if (!p.activeBetId || p.cashedOut) return;
+
+      p.inFlight = true;
+      const res = await api('/api/crash/cashout', {
+        method: 'POST',
+        body: JSON.stringify({
+          betId: p.activeBetId,
+          clientMult: currentMultiplier
+        })
+      });
+
+      p.inFlight = false;
+
+      if (res.success) {
+        if (res.state === 'WON') {
+          p.cashedOut = true;
+          playCashoutSound();
+          spawnParachutist();
+          toast(`Cashed out at ${res.multiplier.toFixed(2)}x (+${res.payout.toFixed(2)} ETB)`, 'success');
+          if (res.newBalance !== undefined) {
+            serverBalance = res.newBalance;
+            showBalance();
+          }
+          updatePanelActionBtn(idx);
+          recordUserBetHistory(p.betInput, res.multiplier, res.payout);
+
+          // If crashPoint is revealed, wait until mult curve reaches it then settle
+          if (res.crashPoint) {
+            handleSettledCrashPoint(res.crashPoint);
+          }
+        } else if (res.state === 'CRASHED') {
+          triggerCrash(res.multiplier || currentMultiplier);
+        }
+      } else {
+        toast(res.message || "Cash out failed", "error");
+      }
+    }
+
+    async function pollRoundStatus() {
+      if (gameState !== STATE.FLYING) return;
+
+      const activeBet = panels.find(p => p.activeBetId && !p.cashedOut);
+      if (!activeBet) {
+        // If all active bets cashed out, check status to observe crash
+        const anyBet = panels.find(p => p.activeBetId);
+        if (!anyBet) return;
+        const res = await api(`/api/crash/status?betId=${anyBet.activeBetId}`);
+        if (res.success && res.state === 'CRASHED') {
+          triggerCrash(res.multiplier || res.crashPoint || currentMultiplier);
+        }
+        return;
+      }
+
+      const res = await api(`/api/crash/status?betId=${activeBet.activeBetId}`);
+      if (res.success) {
+        if (res.state === 'CRASHED') {
+          triggerCrash(res.multiplier || res.crashPoint || currentMultiplier);
+        } else if (res.state === 'WON' && !activeBet.cashedOut) {
+          activeBet.cashedOut = true;
+          playCashoutSound();
+          spawnParachutist();
+          if (res.newBalance !== undefined) {
+            serverBalance = res.newBalance;
+            showBalance();
+          }
+          updatePanelActionBtn(activeBet.id);
+        }
+      }
+    }
+
+    let designatedCrashPoint = null;
+    function handleSettledCrashPoint(crashPt) {
+      designatedCrashPoint = crashPt;
+    }
+
+    function triggerCrash(finalMult) {
+      if (gameState === STATE.CRASHED) return;
+      gameState = STATE.CRASHED;
+
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+
+      stopJetEngine();
+      playCrashSound();
+      spawnExplosion();
+
+      currentMultiplier = Number(finalMult);
+      const multDisplay = document.getElementById('mult-display');
+      multDisplay.innerText = `${currentMultiplier.toFixed(2)} x`;
+      multDisplay.classList.add('crashed');
+
+      prependHistoryBar(currentMultiplier);
+
+      postParent({ type: 'BET_ENDED' });
+
+      // Clean up settled bets
+      panels.forEach(p => {
+        p.activeBetId = null;
+        p.inFlight = false;
+        p.cashedOut = false;
+      });
+
+      refreshBalance();
+
+      // Reset to waiting phase after 3.5 seconds
+      setTimeout(() => {
+        resetToWaitingPhase();
+      }, 3500);
+    }
+
+    function resetToWaitingPhase() {
+      gameState = STATE.WAITING;
+      designatedCrashPoint = null;
+      document.getElementById('receiving-badge').style.display = 'flex';
+      const multDisplay = document.getElementById('mult-display');
+      multDisplay.className = 'arena-overlay-mult';
+      multDisplay.innerText = '1.00 x';
+
+      panels.forEach((_, idx) => updatePanelActionBtn(idx));
+
+      // Auto-restart if Autobet is toggled
+      if (panels.some(p => p.autoBet || p.queued)) {
+        setTimeout(() => {
+          if (gameState === STATE.WAITING) launchRoundIfQueued();
+        }, 1500);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       6. High Performance Canvas Graphics (Jet, Sky, Stars, Jet-Burn)
+    ------------------------------------------------------------- */
+    const canvas = document.getElementById('jet-canvas');
+    const ctx = canvas.getContext('2d');
+    let cw = 0, ch = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      cw = rect.width;
+      ch = rect.height;
+      canvas.width = cw * dpr;
+      canvas.height = ch * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Animated entities
+    const stars = Array.from({ length: 65 }, () => ({
+      x: Math.random() * 500,
+      y: Math.random() * 300,
+      size: Math.random() * 1.8 + 0.6,
+      opacity: Math.random() * 0.7 + 0.3
+    }));
+
+    const clouds = [
+      { x: 100, y: 50, scale: 0.9, speed: 1.2 },
+      { x: 300, y: 90, scale: 1.2, speed: 1.6 },
+      { x: 500, y: 30, scale: 0.7, speed: 0.9 }
+    ];
+
+    let parachutes = [];
+    let explosionParticles = [];
+
+    function spawnParachutist() {
+      const pos = getJetScreenPosition();
+      parachutes.push({
+        x: pos.x - 20,
+        y: pos.y + 10,
+        vy: 1.2,
+        sway: 0,
+        opacity: 1
+      });
+    }
+
+    function spawnExplosion() {
+      const pos = getJetScreenPosition();
+      for (let i = 0; i < 28; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = Math.random() * 4 + 1.5;
+        explosionParticles.push({
+          x: pos.x,
+          y: pos.y,
+          vx: Math.cos(ang) * spd,
+          vy: Math.sin(ang) * spd,
+          life: 1.0,
+          color: ['#ff4444', '#f59e0b', '#fcd535', '#ffffff'][Math.floor(Math.random() * 4)]
+        });
+      }
+    }
+
+    function getJetScreenPosition() {
+      if (gameState === STATE.WAITING || gameState === STATE.IDLE) {
+        return { x: cw * 0.5, y: ch * 0.44 };
+      }
+      // Trajectory climbs along a gentle supersonic curve up and right
+      const elapsed = Math.max(0, (performance.now() - roundFlightStart) / 1000);
+      const progress = Math.min(1, elapsed / 8);
+      const jetX = cw * 0.25 + (cw * 0.58) * Math.min(1, progress * 1.1);
+      const jetY = ch * 0.75 - (ch * 0.52) * Math.pow(progress, 0.75);
+      return { x: jetX, y: jetY };
+    }
+
+    function drawSupersonicJet(x, y, angle, flameSize) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      // Jet Exhaust Flame
+      if (flameSize > 0) {
+        ctx.beginPath();
+        ctx.moveTo(-32, 0);
+        ctx.lineTo(-32 - flameSize * 16, -4);
+        ctx.lineTo(-32 - flameSize * 24, 0);
+        ctx.lineTo(-32 - flameSize * 16, 4);
+        ctx.closePath();
+        ctx.fillStyle = '#ff7700';
+        ctx.shadowColor = '#ffaa00';
+        ctx.shadowBlur = 10;
+        ctx.fill();
+
+        // Inner core flame
+        ctx.beginPath();
+        ctx.moveTo(-32, 0);
+        ctx.lineTo(-32 - flameSize * 10, -2);
+        ctx.lineTo(-32 - flameSize * 14, 0);
+        ctx.lineTo(-32 - flameSize * 10, 2);
+        ctx.closePath();
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // Supersonic Jet Fuselage (Yellow / Black JetX Original Style)
+      // Main Body
+      ctx.beginPath();
+      ctx.moveTo(34, 0);       // Nose needle
+      ctx.lineTo(-10, -6);
+      ctx.lineTo(-28, -5);
+      ctx.lineTo(-32, 0);
+      ctx.lineTo(-28, 5);
+      ctx.lineTo(-10, 6);
+      ctx.closePath();
+      ctx.fillStyle = '#fcd535';
+      ctx.fill();
+      ctx.strokeStyle = '#1a1f2c';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Cockpit Canopy (Dark Glass)
+      ctx.beginPath();
+      ctx.moveTo(12, -2);
+      ctx.lineTo(2, -5);
+      ctx.lineTo(-6, -4);
+      ctx.lineTo(0, -1);
+      ctx.closePath();
+      ctx.fillStyle = '#1c2e4a';
+      ctx.fill();
+
+      // Delta Wings
+      ctx.beginPath();
+      ctx.moveTo(0, -2);
+      ctx.lineTo(-18, -18);
+      ctx.lineTo(-24, -16);
+      ctx.lineTo(-18, -2);
+      ctx.closePath();
+      ctx.fillStyle = '#e5c12e';
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, 2);
+      ctx.lineTo(-18, 18);
+      ctx.lineTo(-24, 16);
+      ctx.lineTo(-18, 2);
+      ctx.closePath();
+      ctx.fillStyle = '#bfa020';
+      ctx.fill();
+      ctx.stroke();
+
+      // Vertical Tail Fin
+      ctx.beginPath();
+      ctx.moveTo(-20, 0);
+      ctx.lineTo(-30, -13);
+      ctx.lineTo(-34, -13);
+      ctx.lineTo(-28, 0);
+      ctx.closePath();
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function renderCanvasLoop() {
+      ctx.clearRect(0, 0, cw, ch);
+
+      // 1. Dynamic Atmosphere Sky Transition
+      let skyGradient;
+      if (gameState === STATE.WAITING || gameState === STATE.IDLE) {
+        // Runway Base Night Airport
+        skyGradient = ctx.createLinearGradient(0, 0, 0, ch);
+        skyGradient.addColorStop(0, '#0a101d');
+        skyGradient.addColorStop(0.7, '#141d2f');
+        skyGradient.addColorStop(1, '#1b2842');
+        ctx.fillStyle = skyGradient;
+        ctx.fillRect(0, 0, cw, ch);
+
+        // Runway Ground
+        ctx.fillStyle = '#111722';
+        ctx.fillRect(0, ch * 0.7, cw, ch * 0.3);
+        ctx.strokeStyle = '#223048';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, ch * 0.7);
+        ctx.lineTo(cw, ch * 0.7);
+        ctx.stroke();
+
+        // Runway markings
+        ctx.strokeStyle = 'rgba(252, 213, 53, 0.4)';
+        ctx.setLineDash([16, 12]);
+        ctx.beginPath();
+        ctx.moveTo(0, ch * 0.85);
+        ctx.lineTo(cw, ch * 0.85);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        // Altitude-based sky: Blue Sky -> Dusk -> Deep Space
+        const mult = currentMultiplier;
+        skyGradient = ctx.createLinearGradient(0, 0, 0, ch);
+
+        if (mult < 2.0) {
+          // Daytime Blue Sky
+          skyGradient.addColorStop(0, '#3a669a');
+          skyGradient.addColorStop(0.5, '#5684ba');
+          skyGradient.addColorStop(1, '#81a7d6');
+        } else if (mult < 5.0) {
+          // Dusk / Twilight
+          skyGradient.addColorStop(0, '#111933');
+          skyGradient.addColorStop(0.5, '#1e2b52');
+          skyGradient.addColorStop(1, '#2f4370');
+        } else {
+          // Deep Space / Cosmos
+          skyGradient.addColorStop(0, '#04060b');
+          skyGradient.addColorStop(0.6, '#0b0f1a');
+          skyGradient.addColorStop(1, '#131b2e');
+        }
+
+        ctx.fillStyle = skyGradient;
+        ctx.fillRect(0, 0, cw, ch);
+
+        // Clouds (when in lower atmosphere)
+        if (mult < 4.0) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+          clouds.forEach(c => {
+            c.x -= c.speed;
+            if (c.x < -120) c.x = cw + 100;
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, 24 * c.scale, 0, Math.PI * 2);
+            ctx.arc(c.x + 22 * c.scale, c.y - 10, 30 * c.scale, 0, Math.PI * 2);
+            ctx.arc(c.x + 48 * c.scale, c.y, 20 * c.scale, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        // Stars (when in upper atmosphere/space)
+        if (mult >= 2.5) {
+          stars.forEach(s => {
+            s.x -= 0.6;
+            if (s.x < 0) s.x = cw;
+            ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+            ctx.fillRect(s.x, s.y, s.size, s.size);
+          });
+        }
+      }
+
+      // 2. Parachutists
+      for (let i = parachutes.length - 1; i >= 0; i--) {
+        const p = parachutes[i];
+        p.y += p.vy;
+        p.sway += 0.05;
+        p.x += Math.sin(p.sway) * 0.4;
+        p.opacity -= 0.003;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        // Parachute dome
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 9, Math.PI, 0, false);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        // Strings
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(p.x - 8, p.y);
+        ctx.lineTo(p.x, p.y + 11);
+        ctx.moveTo(p.x + 8, p.y);
+        ctx.lineTo(p.x, p.y + 11);
+        ctx.stroke();
+        // Person
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(p.x - 1.5, p.y + 11, 3, 5);
+        ctx.restore();
+
+        if (p.opacity <= 0 || p.y > ch + 20) {
+          parachutes.splice(i, 1);
+        }
+      }
+
+      // 3. Jet or Explosion
+      if (gameState === STATE.FLYING) {
+        const t = Math.max(0, (performance.now() - roundFlightStart) / 1000);
+        currentMultiplier = multCurve(t);
+
+        // Update Big Multiplier Display
+        document.getElementById('mult-display').innerText = `${currentMultiplier.toFixed(2)} x`;
+
+        // Check if designated crash point reached
+        if (designatedCrashPoint && currentMultiplier >= designatedCrashPoint) {
+          triggerCrash(designatedCrashPoint);
+        }
+
+        // Modulate sound
+        playJetEngine(100 + currentMultiplier * 5);
+
+        // Update Panels real-time payout amounts on Collect buttons
+        panels.forEach((p, idx) => {
+          if (p.activeBetId && !p.cashedOut) {
+            document.getElementById(`btn-amount-${idx}`).innerText = `${(p.betInput * currentMultiplier).toFixed(2)} ETB`;
+          }
+        });
+
+        const pos = getJetScreenPosition();
+        const flamePulse = 0.8 + Math.random() * 0.45;
+        drawSupersonicJet(pos.x, pos.y, -0.38, flamePulse);
+      } else if (gameState === STATE.WAITING || gameState === STATE.IDLE) {
+        // Stationary on airport runway
+        const pos = getJetScreenPosition();
+        drawSupersonicJet(pos.x, pos.y, 0, 0);
+      } else if (gameState === STATE.CRASHED) {
+        // Explosions
+        for (let i = explosionParticles.length - 1; i >= 0; i--) {
+          const ep = explosionParticles[i];
+          ep.x += ep.vx;
+          ep.y += ep.vy;
+          ep.life -= 0.025;
+
+          ctx.fillStyle = ep.color;
+          ctx.beginPath();
+          ctx.arc(ep.x, ep.y, Math.max(1, ep.life * 5), 0, Math.PI * 2);
+          ctx.fill();
+
+          if (ep.life <= 0) {
+            explosionParticles.splice(i, 1);
+          }
+        }
+      }
+
+      requestAnimationFrame(renderCanvasLoop);
+    }
+    requestAnimationFrame(renderCanvasLoop);
+
+    /* -------------------------------------------------------------
+       7. Real Public Feeds & Live Table Sync (Zero Fake Data)
+    ------------------------------------------------------------- */
+    async function loadPublicFeed() {
+      const res = await api('/api/public/feed?game=JetX', { method: 'GET' });
+      if (res && res.crashes && Array.isArray(res.crashes)) {
+        renderHistoryBar(res.crashes);
+      }
+      if (res && res.wins && Array.isArray(res.wins)) {
+        renderLiveWins(res.wins);
+      }
+    }
+
+    function renderHistoryBar(crashes) {
+      const bar = document.getElementById('history-bar');
+      bar.innerHTML = '';
+      crashes.slice(0, 15).forEach(val => {
+        const span = document.createElement('span');
+        const num = Number(val);
+        span.className = `history-pill ${num >= 10 ? 'high' : (num >= 1.5 ? 'med' : 'low')}`;
+        span.innerText = `${num.toFixed(2)}x`;
+        bar.appendChild(span);
+      });
+    }
+
+    function prependHistoryBar(val) {
+      const bar = document.getElementById('history-bar');
+      const span = document.createElement('span');
+      const num = Number(val);
+      span.className = `history-pill ${num >= 10 ? 'high' : (num >= 1.5 ? 'med' : 'low')}`;
+      span.innerText = `${num.toFixed(2)}x`;
+      bar.insertBefore(span, bar.firstChild);
+      if (bar.children.length > 20) bar.lastChild.remove();
+    }
+
+    function renderLiveWins(wins) {
+      const tbody = document.getElementById('live-table-body');
+      tbody.innerHTML = '';
+      wins.forEach(w => {
+        const tr = document.createElement('tr');
+        const shortUser = w.user ? String(w.user).substring(0, 7) : 'User';
+        tr.innerHTML = `
+          <td>
+            <div class="user-tag-cell">
+              <span class="user-avatar-mini">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </span>
+              <span>${shortUser}</span>
+            </div>
+          </td>
+          <td>${Number(w.win / (w.mult || 1)).toFixed(2)} ETB</td>
+          <td>${Number(w.mult || 1).toFixed(2)}x</td>
+          <td class="col-win">${Number(w.win).toFixed(2)} ETB</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    const myBetsStore = [];
+    function recordUserBetHistory(bet, mult, payout) {
+      myBetsStore.unshift({ bet, mult, payout, time: new Date().toLocaleTimeString() });
+      if (currentTab === 'mybets') renderMyBets();
+    }
+
+    let currentTab = 'players';
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      const activeEl = Array.from(document.querySelectorAll('.tab-item')).find(el => el.innerText.toLowerCase().includes(tab.toLowerCase()));
+      if (activeEl) activeEl.classList.add('active');
+
+      if (tab === 'mybets') {
+        renderMyBets();
+      } else {
+        loadPublicFeed();
+      }
+    }
+
+    function renderMyBets() {
+      const tbody = document.getElementById('live-table-body');
+      tbody.innerHTML = '';
+      if (myBetsStore.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#6b7280;padding:16px;">No bets yet</td></tr>';
+        return;
+      }
+      myBetsStore.forEach(b => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${b.time}</td>
+          <td>${b.bet.toFixed(2)} ETB</td>
+          <td>${b.mult.toFixed(2)}x</td>
+          <td class="col-win">${b.payout.toFixed(2)} ETB</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Refresh public feed every 8 seconds
+    setInterval(loadPublicFeed, 8000);
+
+    // Initial check
+    setTimeout(() => {
+      if (!ready) {
+        // If loaded directly outside iframe, initialize directly for standalone testing
+        refreshBalance();
+        loadPublicFeed();
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
